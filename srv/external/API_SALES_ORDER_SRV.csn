@@ -729,7 +729,20 @@
           "cardinality": {
             "max": "*"
           },
-          "keys": []
+          "on": [
+            {
+              "ref": [
+                "to_Item",
+                "SalesOrder"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "SalesOrder"
+              ]
+            }
+          ]
         },
         "to_Partner": {
           "@cds.ambiguous": "missing on condition?",

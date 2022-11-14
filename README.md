@@ -3,6 +3,8 @@ This is a sample repo to demonstrate the usage of the SAPUI5 oData V2 Model [Dee
 
 Attention!!! This is a work in progress to get the main points.
 
+[<img src="./doc/sapui5-deep-create.gif">]
+
 It contains these folders and files, following our recommended project layout:
 
 File or Folder | Purpose
