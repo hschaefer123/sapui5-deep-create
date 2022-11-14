@@ -27,6 +27,9 @@ sap.ui.define([
                 selectedSuppliers: []
             };
 
+            // Restoring Fiori Application State (see John Patterson blog)
+            // https://blogs.sap.com/2017/06/19/restoring-fiori-application-state/
+
             // create an instance of the navigation handler
             this.oNavigationHandler = new NavigationHandler(this);
 

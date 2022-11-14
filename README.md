@@ -1,6 +1,8 @@
 # sapui5-deep-create
 This is a sample repo to demonstrate the usage of the SAPUI5 oData V2 Model [DeepCreate](https://sapui5.hana.ondemand.com/1.108.0/#/topic/6c47b2b39db9404582994070ec3d57a2.html#loio4c4cd99af9b14e08bb72470cc7cabff4/section_DCR) feature introduced with release 1.108.
 
+Attention!!! This is a work in progress to get the main points.
+
 It contains these folders and files, following our recommended project layout:
 
 File or Folder | Purpose
