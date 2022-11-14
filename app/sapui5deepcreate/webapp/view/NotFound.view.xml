@@ -1,0 +1,9 @@
+<mvc:View controllerName="udina.sample.sapui5deepcreate.controller.NotFound" 
+    xmlns="sap.m" xmlns:mvc="sap.ui.core.mvc">
+    <MessagePage id="page" description="" icon="{sap-icon://document}" text="{i18n>notFoundText}" 
+        title="{i18n>notFoundTitle}">
+        <customDescription>
+            <Link id="link" press=".onLinkPressed" text="{i18n>backToWorklist}" />
+        </customDescription>
+    </MessagePage>
+</mvc:View>

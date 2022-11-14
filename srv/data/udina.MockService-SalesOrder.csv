@@ -1,0 +1,2 @@
+SalesOrder,SalesOrderType,SalesOrganization,DistributionChannel,OrganizationDivision,SoldToParty,PurchaseOrderByCustomer,CustomerPurchaseOrderDate
+0000000001,OR,1010,10,00,10100001,Simulated via OData API,2022-11-01

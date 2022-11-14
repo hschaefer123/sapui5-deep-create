@@ -1,0 +1,64 @@
+<mvc:View controllerName="udina.sample.sapui5deepcreate.controller.ListReport" displayBlock="true" 
+    xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:f="sap.f" xmlns:mvc="sap.ui.core.mvc" 
+    xmlns:smartVariants="sap.ui.comp.smartvariants"
+    xmlns:smartFilterBar="sap.ui.comp.smartfilterbar" xmlns:smartTable="sap.ui.comp.smarttable">
+    <f:DynamicPage stickySubheaderProvider="list">
+        <f:title>
+            <f:DynamicPageTitle>
+                <f:heading>
+                    <smartVariants:SmartVariantManagement id="__SVM01" entitySet="SalesOrder"
+						persistencyKey="udina.sample.sapui5deepcreate.view.ListReport" showShare="true" 
+                        showExecuteOnSelection="true" />
+                </f:heading>
+            </f:DynamicPageTitle>
+        </f:title>
+        <f:header>
+        	<f:DynamicPageHeader>
+                <smartFilterBar:SmartFilterBar id="smartFilterBar" smartVariant="__SVM01" 
+                    persistencyKey="udina.sample.sapui5deepcreate.view.ListReport.FilterBar"
+                    entitySet="SalesOrder" liveMode="true"
+                    enableBasicSearch="true" basicSearchFieldName="SalesOrder"
+                    search=".onSearch"/>
+            </f:DynamicPageHeader>
+        </f:header>
+        <f:content>
+            <smartTable:SmartTable id="smartTable" header="{i18n>SalesOrders}" tableType="ResponsiveTable"
+                smartVariant="__SVM01" 
+                persistencyKey="udina.sample.sapui5deepcreate.view.ListReport.SmartTable"
+				entitySet="SalesOrder" enableAutoBinding="true" enableAutoColumnWidth="true"                
+                smartFilterId="smartFilterBar" showRowCount="true" 
+                initiallyVisibleFields="SalesOrder,PurchaseOrderByCustomer,CustomerPurchaseOrderDate"
+                beforeRebindTable=".onBeforeRebindTable">
+                <smartTable:layoutData>
+					<FlexItemData growFactor="1" baseSize="0%"/>
+				</smartTable:layoutData>
+                <smartTable:customToolbar>
+                    <OverflowToolbar>
+                        <ToolbarSpacer/>
+                        <Button text="{i18n>Create}" press=".onAdd" />
+                        <!--<Button text="{i18n>Refresh}" press=".onRefresh" />-->
+                        <ToolbarSeparator/>
+                    </OverflowToolbar>                    
+                </smartTable:customToolbar>
+                <Table itemPress=".onItemPress">
+                    <columns>
+                        <Column id="materialItems" hAlign="Begin">
+                            <customData>
+                                <core:CustomData key="p13nData"
+                                    value='\{"columnKey": "ItemInfo", "columnIndex": 9, "XnavigationProperty": "to_Item", "additionalProperty": "to_Item/RequestedQuantity,to_Item/Material"}' />
+                            </customData>
+                            <Text text="{i18n>RequestedItems}" />
+                        </Column>
+                    </columns>
+                    <items>
+                        <ColumnListItem type="Active">
+                            <cells>
+                                <Text text="{ path: 'to_Item', formatter: '.formatInfo' }" />
+                            </cells>
+                        </ColumnListItem>
+                    </items>
+                </Table>                    
+			</smartTable:SmartTable>
+        </f:content>
+    </f:DynamicPage>
+</mvc:View>

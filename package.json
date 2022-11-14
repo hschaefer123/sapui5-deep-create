@@ -1,0 +1,60 @@
+{
+    "name": "sapui5-deep-create",
+    "version": "1.0.0",
+    "description": "A simple CAP project.",
+    "repository": "<Add your repository here>",
+    "license": "UNLICENSED",
+    "private": true,
+    "dependencies": {
+        "@sap/cds": "^6",
+        "@sap/cds-odata-v2-adapter-proxy": "^1.9.15",
+        "express": "^4"
+    },
+    "devDependencies": {
+        "@sap/ux-specification": "^1.102.12",
+        "sqlite3": "^5.1.2"
+    },
+    "scripts": {
+        "start": "cds run",
+        "watch-sapui5deepcreate": "cds watch --open sapui5deepcreate/webapp/index.html?sap-ui-xx-viewCache=false"
+    },
+    "engines": {
+        "node": "^16.15"
+    },
+    "eslintConfig": {
+        "extends": "eslint:recommended",
+        "env": {
+            "es2020": true,
+            "node": true,
+            "jest": true,
+            "mocha": true
+        },
+        "globals": {
+            "SELECT": true,
+            "INSERT": true,
+            "UPDATE": true,
+            "DELETE": true,
+            "CREATE": true,
+            "DROP": true,
+            "CDL": true,
+            "CQL": true,
+            "CXL": true,
+            "cds": true
+        },
+        "rules": {
+            "no-console": "off",
+            "require-atomic-updates": "off"
+        }
+    },
+    "sapux": [
+        "app/sapui5deepcreate"
+    ],
+    "cds": {
+        "requires": {
+            "API_SALES_ORDER_SRV": {
+                "kind": "odata-v2",
+                "model": "srv/external/API_SALES_ORDER_SRV"
+            }
+        }
+    }
+}

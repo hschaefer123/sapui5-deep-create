@@ -1,0 +1,146 @@
+{
+    "_version": "1.40.0",
+    "sap.app": {
+        "id": "udina.sample.sapui5deepcreate",
+        "type": "application",
+        "i18n": "i18n/i18n.properties",
+        "applicationVersion": {
+            "version": "0.0.1"
+        },
+        "title": "{{appTitle}}",
+        "description": "{{appDescription}}",
+        "resources": "resources.json",
+        "dataSources": {
+            "mainService": {
+                "uri": "/v2/mock/",
+                "type": "OData",
+                "settings": {
+                    "annotations": [],
+                    "localUri": "localService/metadata.xml",
+                    "odataVersion": "2.0"
+                }
+            }
+        },
+        "crossNavigation": {
+            "inbounds": {
+                "fe-inbound": {
+                    "signature": {
+                        "parameters": {},
+                        "additionalParameters": "allowed"
+                    },
+                    "semanticObject": "UDINASalesOrder",
+                    "action": "manage",
+                    "title": "{{flpTitle}}",
+                    "subTitle": "{{flpSubTitle}}",
+                    "info": "{{flpInfo}}",
+                    "icon": "sap-icon://puzzle"
+                }
+            }
+        }
+    },
+    "sap.ui": {
+        "technology": "UI5",
+        "icons": {
+            "icon": "",
+            "favIcon": "",
+            "phone": "",
+            "phone@2": "",
+            "tablet": "",
+            "tablet@2": ""
+        },
+        "deviceTypes": {
+            "desktop": true,
+            "tablet": true,
+            "phone": true
+        }
+    },
+    "sap.ui5": {
+        "flexEnabled": true,
+        "dependencies": {
+            "minUI5Version": "1.108.0",
+            "libs": {
+                "sap.m": {},
+                "sap.ui.core": {},
+                "sap.f": {},
+                "sap.ui.comp": {},
+                "sap.ui.fl": {},
+                "sap.uxap": {}
+            }
+        },
+        "contentDensities": {
+            "compact": true,
+            "cozy": true
+        },
+        "models": {
+            "i18n": {
+                "type": "sap.ui.model.resource.ResourceModel",
+                "settings": {
+                    "bundleName": "udina.sample.sapui5deepcreate.i18n.i18n"
+                }
+            },
+            "": {
+                "dataSource": "mainService",
+                "preload": true,
+                "settings": {
+                    "defaultBindingMode": "TwoWay",
+                    "defaultCountMode": "Inline",
+                    "useBatch": false
+                }
+            }
+        },
+        "resources": {
+            "css": [
+                {
+                    "uri": "css/style.css"
+                }
+            ]
+        },
+        "routing": {
+            "config": {
+                "routerClass": "sap.m.routing.Router",
+                "viewType": "XML",
+                "async": true,
+                "viewPath": "udina.sample.sapui5deepcreate.view",
+                "controlAggregation": "pages",
+                "controlId": "app",
+                "clearControlAggregation": false
+            },
+            "routes": [
+                {
+                    "pattern": ":?query:",
+                    "name": "ListReport",
+                    "target": "ListReport"
+                },
+                {
+                    "pattern": "object/:objectId::?query:",
+                    "name": "ObjectPage",
+                    "target": "ObjectPage"
+                }
+            ],
+            "targets": {
+                "ListReport": {
+                    "viewId": "ListReport",
+                    "viewName": "ListReport"
+                },
+                "ObjectPage": {
+                    "viewId": "ObjectPage",
+                    "viewName": "ObjectPage"
+                },
+                "objectNotFound": {
+                    "viewName": "ObjectNotFound",
+                    "viewId": "objectNotFound"
+                },
+                "notFound": {
+                    "viewName": "NotFound",
+                    "viewId": "notFound"
+                }
+            }
+        },
+        "rootView": {
+            "viewName": "udina.sample.sapui5deepcreate.view.App",
+            "type": "XML",
+            "async": true,
+            "id": "App"
+        }
+    }
+}

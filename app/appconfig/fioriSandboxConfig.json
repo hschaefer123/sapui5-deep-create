@@ -1,0 +1,68 @@
+{
+    "services": {
+        "Container": {
+            "adapter": {
+                "config": {
+                    "image": "/mime/openui5-signet.svg"
+                }
+            }
+        },
+        "LaunchPage": {
+            "adapter": {
+                "config": {
+                    "catalogs": [],
+                    "groups": [
+                        {
+                            "id": "UDINASalesOrder",
+                            "title": "UDINA Deep Create",
+                            "isPreset": true,
+                            "isVisible": true,
+                            "isGroupLocked": false,
+                            "tiles": [
+                                {
+                                    "id": "DeepCreate",
+                                    "tileType": "sap.ushell.ui.tile.StaticTile",
+                                    "properties": {
+                                        "title": "Deep Create Sample",
+                                        "subtitle": "Using v2 ODataModel",
+                                        "info": "Powered by CAP",
+                                        "icon": "sap-icon://puzzle",
+                                        "targetURL": "#UDINASalesOrder-manage"
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                }
+            }
+        },
+        "NavTargetResolution": {
+            "config": {
+                "enableClientSideTargetResolution": true
+            }
+        },
+        "ClientSideTargetResolution": {
+            "adapter": {
+                "config": {
+                    "inbounds": {
+                        "SmartPurchasing": {
+                            "semanticObject": "UDINASalesOrder",
+                            "action": "manage",
+                            "title": "Deep Create Sample",
+                            "subTitle": "CRUD oData v2",
+                            "signature": {
+                                "parameters": {},
+                                "additionalParameters": "allowed"
+                            },
+                            "resolutionResult": {
+                                "applicationType": "SAPUI5",
+                                "additionalInformation": "SAPUI5.Component=udina.sample.sapui5deepcreate",
+                                "url": "/sapui5deepcreate/webapp"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,127 @@
+<mvc:View controllerName="udina.sample.sapui5deepcreate.controller.ObjectPage" displayBlock="true"
+    xmlns:app="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1"
+    xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:l="sap.ui.layout" xmlns:mvc="sap.ui.core.mvc" 
+    xmlns:smartForm="sap.ui.comp.smartform" xmlns:smartField="sap.ui.comp.smartfield"
+    xmlns:upload="sap.m.upload" xmlns:uxap="sap.uxap">
+    <uxap:ObjectPageLayout id="ObjectPageLayout" showTitleInHeaderContent="true" 
+        busy="{ui>/busy}" busyIndicatorDelay="{ui>/delay}"
+        upperCaseAnchorBar="false" showFooter="{ui>/isEditable}">
+        <uxap:headerTitle>
+            <uxap:ObjectPageDynamicHeaderTitle id="ObjectPageHeader">
+                <uxap:expandedHeading>
+                    <Title text="{= ${ui>/isEditable} ? ${i18n>SalesOrderCreate} : ${i18n>SalesOrderDisplay}}" wrapping="true"/>
+                </uxap:expandedHeading>
+                <uxap:snappedHeading>
+                    <Title text="{= ${ui>/isEditable} ? ${i18n>SalesOrderCreate} : ${i18n>SalesOrderDisplay}}" wrapping="true"/>
+                </uxap:snappedHeading>
+            </uxap:ObjectPageDynamicHeaderTitle>
+        </uxap:headerTitle>
+        <uxap:headerContent>
+            <FlexBox wrap="Wrap" visible="{= !${ui>/isEditable}}">
+                <l:VerticalLayout class="sapUiSmallMarginBeginEnd">
+                    <Label text="{i18n>SalesOrder}"/>
+                    <Text text="{SalesOrder}"/>
+                </l:VerticalLayout>
+			</FlexBox>
+        </uxap:headerContent>
+        <uxap:sections>
+            <uxap:ObjectPageSection titleUppercase="false" title="Head">
+                <uxap:subSections>
+					<uxap:ObjectPageSubSection>
+                        <smartForm:SmartForm id="SmartForm" editable="{ui>/isEditable}"
+                        	app:defaultCheckBoxDisplayBehaviour="OnOff"
+			                app:defaultDropDownDisplayBehaviour="idAndDescription">
+                            <smartForm:layout>
+				                <smartForm:ColumnLayout columnsM="2" columnsL="3" columnsXL="4"/>
+			                </smartForm:layout>
+                            <smartForm:Group>
+                                <smartForm:GroupElement>
+                                    <smartField:SmartField value="{PurchaseOrderByCustomer}"/>
+                                </smartForm:GroupElement>
+                                <smartForm:GroupElement>
+                                    <smartField:SmartField value="{CustomerPurchaseOrderDate}"/>                                    
+                                </smartForm:GroupElement>
+                            </smartForm:Group>
+                        </smartForm:SmartForm>
+                    </uxap:ObjectPageSubSection>
+                </uxap:subSections>
+            </uxap:ObjectPageSection>
+            <uxap:ObjectPageSection titleUppercase="false" title="Items">
+                <uxap:subSections>
+					<uxap:ObjectPageSubSection>
+                        <Table id="itemTable" width="auto" items="{to_Item}">
+                            <headerToolbar>
+                                <Toolbar>
+                                    <ToolbarSpacer/>
+                                    <Button text="Add" press=".onAddItem"/>
+                                </Toolbar>
+                            </headerToolbar>
+                            <columns>
+                                <Column width="12em">
+                                    <Label text="Quantity" wrapping="true"/>
+                                </Column>
+                                <Column width="6em">
+                                    <Label text="Unit" wrapping="true"/>
+                                </Column>
+                                <Column>
+                                    <Label text="Material"/>
+                                </Column>
+                                <Column width="3em"/>
+                            </columns>
+                            <items>
+                                <ColumnListItem>
+                                    <cells>
+                                        <!--<smartField:SmartField value="{RequestedQuantity}"/>-->
+                                        <StepInput value="{RequestedQuantity}"/>
+                                        <smartField:SmartField value="{RequestedQuantityUnit}"/>
+                                        <smartField:SmartField value="{Material}"/>
+                                        <Button icon="sap-icon://delete" type="Reject" 
+                                            press="onDeleteItem"/>
+                                    </cells>
+                                </ColumnListItem>
+                            </items>
+                        </Table>
+                    </uxap:ObjectPageSubSection>
+                </uxap:subSections>
+            </uxap:ObjectPageSection>
+            <uxap:ObjectPageSection titleUppercase="false" title="Attachments">
+                <uxap:subSections>
+					<uxap:ObjectPageSubSection>
+                        <upload:UploadSet
+                            id="UploadSet"
+                            instantUpload="true"
+                            uploadButtonInvisible="{= !${ui>/isEditable}}"
+                            uploadEnabled="{ui>/isEditable}"                            
+                            terminationEnabled="true"
+                            fileTypes="txt,doc,png,pdf"
+                            maxFileNameLength="30"
+                            maxFileSize="5000"
+                            mediaTypes="text/plain,application/msword,application/pdf,image/svg+xml,image/jpeg,image/png"
+                            items="{path: 'to_Attachment', templateShareable: false}"
+                            mode="None">
+                            <upload:items>
+                                <upload:UploadSetItem
+                                    fileName="{FileName}"
+                                    mediaType="{MediaType}"
+                                    url="{Url}"
+                                    thumbnailUrl="{ThumbnailUrl}">
+                                </upload:UploadSetItem>
+                            </upload:items>
+                        </upload:UploadSet>
+                    </uxap:ObjectPageSubSection>
+                </uxap:subSections>
+            </uxap:ObjectPageSection>
+        </uxap:sections>
+        <uxap:footer>
+            <OverflowToolbar>
+                <Button icon="sap-icon://alert" text="{= ${message>/}.length }" type="Emphasized"
+                    visible="false" press=".onMessagePopoverPress"/>
+                <ToolbarSpacer/>
+                <ToolbarSpacer/>
+                <Button text="{i18n>Save}" type="Emphasized" press=".editFlow.onSave"/>
+                <Button text="{i18n>SavePreProcessed}" press=".editFlow.onSavePreProcessed"/>
+                <Button text="{i18n>Cancel}" press=".editFlow.onCancel"/>
+            </OverflowToolbar>
+        </uxap:footer>
+    </uxap:ObjectPageLayout>
+</mvc:View>
