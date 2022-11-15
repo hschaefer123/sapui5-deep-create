@@ -6,7 +6,7 @@
         "i18n": {
             "bundleUrl": "i18n/i18n.properties",
             "supportedLocales": [
-                ""
+                "", "de", "en"
             ],
             "fallbackLocale": ""
         },
@@ -87,7 +87,7 @@
                 "settings": {
                     "bundleName": "udina.sample.sapui5deepcreate.i18n.i18n",
                     "supportedLocales": [
-                        ""
+                        "", "de", "en"
                     ],
                     "fallbackLocale": ""
                 }
