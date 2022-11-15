@@ -9,10 +9,12 @@
         <uxap:headerTitle>
             <uxap:ObjectPageDynamicHeaderTitle id="ObjectPageHeader">
                 <uxap:expandedHeading>
-                    <Title text="{= ${ui>/isEditable} ? ${i18n>SalesOrderCreate} : ${i18n>SalesOrderDisplay}}" wrapping="true"/>
+                    <Title text="{= ${ui>/isEditable} ? ${i18n>SalesOrderCreate} : ${i18n>SalesOrderDisplay}}" 
+                        wrapping="true"/>
                 </uxap:expandedHeading>
                 <uxap:snappedHeading>
-                    <Title text="{= ${ui>/isEditable} ? ${i18n>SalesOrderCreate} : ${i18n>SalesOrderDisplay}}" wrapping="true"/>
+                    <Title text="{= ${ui>/isEditable} ? ${i18n>SalesOrderCreate} : ${i18n>SalesOrderDisplay}}" 
+                        wrapping="true"/>
                 </uxap:snappedHeading>
             </uxap:ObjectPageDynamicHeaderTitle>
         </uxap:headerTitle>
@@ -53,7 +55,7 @@
                             <headerToolbar>
                                 <Toolbar>
                                     <ToolbarSpacer/>
-                                    <Button text="Add" press=".onAddItem"/>
+                                    <Button text="Add" visible="{ui>/isEditable}" press=".onAddItem"/>
                                 </Toolbar>
                             </headerToolbar>
                             <columns>
@@ -66,17 +68,19 @@
                                 <Column>
                                     <Label text="Material"/>
                                 </Column>
-                                <Column width="3em"/>
+                                <Column width="3em" visible="{ui>/isEditable}"/>
                             </columns>
                             <items>
                                 <ColumnListItem>
                                     <cells>
-                                        <!--<smartField:SmartField value="{RequestedQuantity}"/>-->
-                                        <StepInput value="{RequestedQuantity}"/>
-                                        <smartField:SmartField value="{RequestedQuantityUnit}"/>
-                                        <smartField:SmartField value="{Material}"/>
+                                        <StepInput value="{RequestedQuantity}"
+                                            editable="{ui>/isEditable}"/>
+                                        <smartField:SmartField value="{RequestedQuantityUnit}" 
+                                            editable="{ui>/isEditable}"/>
+                                        <smartField:SmartField value="{Material}"
+                                            editable="{ui>/isEditable}"/>
                                         <Button icon="sap-icon://delete" type="Reject" 
-                                            press="onDeleteItem"/>
+                                            visible="{ui>/isEditable}" press=".onDeleteItem"/>
                                     </cells>
                                 </ColumnListItem>
                             </items>
