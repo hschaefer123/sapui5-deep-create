@@ -79,8 +79,5 @@ This is manually fixed inside **API_SALES_ORDER_SRV.csn** after creation using t
 },
 ```
 
-### NotFound navTo issue
-Works only on first call?!?
-
 ### async issue ObjectPage sometime showing
 Sometime initial call shows ObjectNotFoundPage

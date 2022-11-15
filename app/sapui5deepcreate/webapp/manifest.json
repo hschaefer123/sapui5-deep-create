@@ -6,7 +6,9 @@
         "i18n": {
             "bundleUrl": "i18n/i18n.properties",
             "supportedLocales": [
-                "", "de", "en"
+                "",
+                "de",
+                "en"
             ],
             "fallbackLocale": ""
         },
@@ -68,9 +70,9 @@
             "libs": {
                 "sap.m": {},
                 "sap.ui.core": {},
+                "sap.ui.layout": {},
                 "sap.f": {},
                 "sap.ui.comp": {},
-                "sap.ui.fl": {},
                 "sap.uxap": {}
             }
         },
@@ -87,7 +89,9 @@
                 "settings": {
                     "bundleName": "udina.sample.sapui5deepcreate.i18n.i18n",
                     "supportedLocales": [
-                        "", "de", "en"
+                        "",
+                        "de",
+                        "en"
                     ],
                     "fallbackLocale": ""
                 }
@@ -125,23 +129,23 @@
             "routes": [
                 {
                     "pattern": ":?query:",
-                    "name": "ListReport",
-                    "target": "ListReport"
+                    "name": "list",
+                    "target": "list"
                 },
                 {
                     "pattern": "object/:objectId::?query:",
-                    "name": "ObjectPage",
-                    "target": "ObjectPage"
+                    "name": "object",
+                    "target": "object"
                 }
             ],
             "targets": {
-                "ListReport": {
-                    "viewId": "ListReport",
+                "list": {
+                    "viewId": "list",
                     "viewName": "ListReport",
                     "viewLevel": 1
                 },
-                "ObjectPage": {
-                    "viewId": "ObjectPage",
+                "object": {
+                    "viewId": "object",
                     "viewName": "ObjectPage",
                     "viewLevel": 2
                 },

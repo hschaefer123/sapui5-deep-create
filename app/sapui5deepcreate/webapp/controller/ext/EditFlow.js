@@ -154,7 +154,7 @@ sap.ui.define([
                     await this._submitChanges(oContext);
 
                     // navigate back to ListReport
-                    //this.base.getAppComponent().getRouter().navTo("ListReport");
+                    //this.base.getAppComponent().getRouter().navTo("list");
                     this._navToContext(oContext);
 
                     fnResolve();
@@ -188,7 +188,7 @@ sap.ui.define([
                     // navigate back to ListReport
                     this._navToContext(oContext);
 
-                    fnResolve();                    
+                    fnResolve();
                 } catch (oError) {
                     Log.error("saveDocumentPreProcessed",
                         JSON.stringify(oError),
@@ -211,12 +211,12 @@ sap.ui.define([
         /* =========================================================== */
 
         _navBack: function () {
-            this.base.getAppComponent().getRouter().navTo("ListReport");
+            this.base.getRouter().navTo("list");
         },
 
         _navToContext: function (oContext) {
             // TODO: maybe navTo ObjectPage view mode after creation
-            //this.base.getAppComponent().getRouter().navTo("ListReport");
+            //this.base.getRouter().navTo("list");
             this._navBack();
         },
 

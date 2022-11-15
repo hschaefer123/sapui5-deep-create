@@ -51,10 +51,7 @@ sap.ui.define([
             this.getView().setModel(oUiModel, "ui");
 
             // handle create route
-            oRouter.getRoute("ObjectPage").attachPatternMatched(
-                this.onObjectMatched,
-                this
-            );
+            oRouter.getRoute("object").attachPatternMatched(this.onObjectMatched, this);
 
             // use editFlow events
             // this.editFlow.onBeforeSave = this.onEditFlowBeforeSave;

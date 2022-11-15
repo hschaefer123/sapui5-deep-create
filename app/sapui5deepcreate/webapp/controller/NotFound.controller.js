@@ -25,8 +25,7 @@ sap.ui.define([
             }
 
             // call the parent's onNavBack
-            //BaseController.prototype.onNavBack.apply(this, arguments);
-            this.getRouter().navTo("ListReport");
+            BaseController.prototype.onNavBack.apply(this, arguments);
         }
 
     });

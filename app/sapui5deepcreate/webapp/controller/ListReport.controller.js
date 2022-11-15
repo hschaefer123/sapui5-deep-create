@@ -3,9 +3,8 @@ sap.ui.define([
     "udina/sample/sapui5deepcreate/model/formatter",
     "sap/ui/generic/app/navigation/service/NavigationHandler",
     "sap/ui/generic/app/navigation/service/NavType",
-    "sap/ui/model/Sorter",
-    "sap/ui/core/routing/History"
-], function (BaseController, formatter, NavigationHandler, NavType, Sorter, History) {
+    "sap/ui/model/Sorter"
+], function (BaseController, formatter, NavigationHandler, NavType, Sorter) {
     "use strict";
 
     return BaseController.extend("udina.sample.sapui5deepcreate.controller.ListReport", {
@@ -17,16 +16,6 @@ sap.ui.define([
             this._oSmartFilterBar = this.byId("smartFilterBar");
             this._oSmartTable = this.byId("smartTable");
 
-            // keeps the app state
-            this._oAppState = {
-                selectedTabFilter: "all",
-                searchText: "",
-                selectedContextPaths: [],
-                // collect filter
-                selectedCategories: [],
-                selectedSuppliers: []
-            };
-
             // Restoring Fiori Application State (see John Patterson blog)
             // https://blogs.sap.com/2017/06/19/restoring-fiori-application-state/
 
@@ -35,6 +24,15 @@ sap.ui.define([
 
             // on back navigation, the previous app state is returned in the resolved Promise
             this.oNavigationHandler.parseNavigation().done(this.onNavigationDone.bind(this));
+
+            // keeps the app state
+            this._oAppState = {
+                selectedTabFilter: "all",
+                searchText: "",
+                selectedContextPaths: [],
+                // collect filter
+                selectedOrderTypes: [],
+            };
         },
 
         onBeforeRebindTable: function (oEvent) {
@@ -54,14 +52,14 @@ sap.ui.define([
             //console.log("onBeforeRebindTable", mBindingParams);
         },
 
-        onNotFound: function() {
-            this.getRouter().getTargets().display("notFound");
+        onNotFound: function () {
+            this.getRouter().getTargets().display("notFound", {
+                fromTarget: "list"
+            });
         },
 
         onAdd: function () {
-            var oRouter = this.getAppComponent().getRouter();
-            //oRouter.getTargets().display("DeepCreate");
-            oRouter.navTo("ObjectPage");
+            this.getAppComponent().getRouter().navTo("object");
         },
 
         onRefresh: function () {
@@ -90,30 +88,16 @@ sap.ui.define([
 
             // save table selection to appState
             this._oAppState.selectedContextPaths = [oListItem.getBindingContext().getPath()];
-            //this._oAppState.selectedContextPaths = oTable.getSelectedContextPaths();            
-
-            //this.oNavigationHandler.navigate("UDINASalesOrder", "sample", {}, { customData: this._oAppState }, undefined);
+            //this._oAppState.selectedContextPaths = oTable.getSelectedContextPaths();                        
 
             // The source is the list item that got pressed
             this._showObject(oListItem);
         },
 
-        /**
-         * Navigates back in the browser history, if the entry was created by this app.
-         * If not, it navigates to the Fiori Launchpad home page.
-         * @public
-         */
-        /*
-        onNavBack: function () {
-            var oHistory = History.getInstance(),
-                sPreviousHash = oHistory.getPreviousHash();
-
-            if (sPreviousHash !== undefined) {
-                // The history contains a previous entry
-                history.go(-1);
-            }
+        onCrossAppNavigation: function () {
+            //(sSemanticObject, sActionName, vParameters?, oAppData?, fnError?)
+            this.oNavigationHandler.navigate("UDINATest", "display", {}, { customData: this._oAppState }, undefined);
         },
-        */
 
         /**
          * if navigated back with appstate enabled then rehydrate the page using the
@@ -157,7 +141,7 @@ sap.ui.define([
          * @private
          */
         _showObject: function (oItem) {
-            this.getRouter().navTo("ObjectPage", {
+            this.getRouter().navTo("object", {
                 objectId: oItem.getBindingContext().getProperty("SalesOrder")
             });
         },

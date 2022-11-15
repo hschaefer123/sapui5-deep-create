@@ -24,7 +24,7 @@ sap.ui.define([
             if (sPreviousHash !== undefined) {
                 window.history.go(-1);
             } else {
-                this.getRouter().navTo("ListReport", {}, true /*no history*/);
+                this.getRouter().navTo("list", {}, true /*no history*/);
             }
         },
 
