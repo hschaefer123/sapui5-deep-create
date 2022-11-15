@@ -48,13 +48,5 @@
     },
     "sapux": [
         "app/sapui5deepcreate"
-    ],
-    "cds": {
-        "requires": {
-            "API_SALES_ORDER_SRV": {
-                "kind": "odata-v2",
-                "model": "srv/external/API_SALES_ORDER_SRV"
-            }
-        }
-    }
+    ]
 }
