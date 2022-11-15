@@ -33,8 +33,7 @@ sap.ui.define([
         messageHandler: MessageHandler,
 
         onInit: function () {
-            var iOriginalBusyDelay,
-                oRouter = this.getAppComponent().getRouter();
+            var iOriginalBusyDelay;
 
             // Store original busy indicator delay, so it can be restored later on
             iOriginalBusyDelay = this.getView().getBusyIndicatorDelay();
@@ -50,24 +49,11 @@ sap.ui.define([
             oUiModel.setDefaultBindingMode(BindingMode.OneWay);
             this.getView().setModel(oUiModel, "ui");
 
-            // handle create route
-            oRouter.getRoute("object").attachPatternMatched(this.onObjectMatched, this);
+            // handle current route
+            this.getRouter().getRoute("object").attachPatternMatched(this._onObjectMatched, this);
 
             // use editFlow events
             // this.editFlow.onBeforeSave = this.onEditFlowBeforeSave;
-        },
-
-        onObjectMatched: function (oEvent) {
-            var sKey = oEvent.getParameter("arguments").objectId,
-                sObjectPath;
-
-            if (sKey) {
-                sObjectPath = "/" + this.getModel().createKey("SalesOrder", {
-                    SalesOrder: sKey
-                });
-            }
-
-            this._bindView(sObjectPath);
         },
 
         onEditFlowBeforeSave: function (mParameters) {
@@ -89,6 +75,19 @@ sap.ui.define([
             var oUiModel = this.getView().getModel("ui");
             oUiModel.setProperty("/editMode", (bEditable) ? EditMode.Editable : EditMode.Display);
             oUiModel.setProperty("/isEditable", bEditable);
+        },
+
+        _onObjectMatched: function (oEvent) {
+            var sKey = oEvent.getParameter("arguments").objectId,
+                sObjectPath;
+
+            if (sKey) {
+                sObjectPath = "/" + this.getModel().createKey("SalesOrder", {
+                    SalesOrder: sKey
+                });
+            }
+
+            this._bindView(sObjectPath);
         },
 
         /**

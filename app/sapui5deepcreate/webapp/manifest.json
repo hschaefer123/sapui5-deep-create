@@ -140,13 +140,16 @@
             ],
             "targets": {
                 "list": {
+                    "isHome": true,
                     "viewId": "list",
                     "viewName": "ListReport",
+                    "title": "{{SalesOrders}}",
                     "viewLevel": 1
                 },
                 "object": {
                     "viewId": "object",
                     "viewName": "ObjectPage",
+                    "title": "{{SalesOrder}}",
                     "viewLevel": 2
                 },
                 "objectNotFound": {
