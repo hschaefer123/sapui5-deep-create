@@ -1,11 +1,32 @@
 sap.ui.define([
-    "sap/ui/core/mvc/Controller"
-], function (Controller) {
+    "sap/ui/core/mvc/Controller",
+    "sap/ui/core/routing/History",
+], function (Controller, History) {
     "use strict";
 
     return Controller.extend("udina.sample.sapui5deepcreate.controller.BaseController", {
 
         _oAppComponent: undefined,
+
+        /**
+         * Event handler  for navigating back.
+         * It checks if there is a history entry. If yes, history.go(-1) will happen.
+         * If not, it will replace the current entry of the browser history with the worklist route.
+         * Furthermore, it removes the defined binding context of the view by calling unbindElement().
+         * @public
+         */
+        onNavBack: function (oEvent) {
+            var oHistory, sPreviousHash;
+
+            oHistory = History.getInstance();
+            sPreviousHash = oHistory.getPreviousHash();
+
+            if (sPreviousHash !== undefined) {
+                window.history.go(-1);
+            } else {
+                this.getRouter().navTo("ListReport", {}, true /*no history*/);
+            }
+        },
 
         /**
          * Returns the current app component.
@@ -27,8 +48,8 @@ sap.ui.define([
          * @returns {sap.ui.core.routing.Router} the router for this component
          */
         getRouter: function () {
-            return this.getAppComponent().getRouter();
-            //return sap.ui.core.UIComponent.getRouterFor(this);
+            //return this.getAppComponent().getRouter();
+            return sap.ui.core.UIComponent.getRouterFor(this);
         },
 
         /**

@@ -2,8 +2,9 @@ sap.ui.define([
     "sap/ui/core/UIComponent",
     "sap/ui/Device",
     "udina/sample/sapui5deepcreate/model/models",
-    "udina/sample/sapui5deepcreate/controller/ErrorHandler"
-], function (UIComponent, Device, models, ErrorHandler) {
+    "udina/sample/sapui5deepcreate/controller/ErrorHandler",
+    "sap/f/IllustrationPool"
+], function (UIComponent, Device, models, ErrorHandler, IllustrationPool) {
     "use strict";
 
     return UIComponent.extend("udina.sample.sapui5deepcreate.Component", {
@@ -23,6 +24,9 @@ sap.ui.define([
 
             // initialize the error handler with the component
             this._oErrorHandler = new ErrorHandler(this);
+
+            // set message model
+			this.setModel(sap.ui.getCore().getMessageManager().getMessageModel(), "message");
 
             // set the device model
             this.setModel(models.createDeviceModel(), "device");

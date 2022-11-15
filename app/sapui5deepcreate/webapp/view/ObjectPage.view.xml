@@ -115,7 +115,7 @@
         <uxap:footer>
             <OverflowToolbar>
                 <Button icon="sap-icon://alert" text="{= ${message>/}.length }" type="Emphasized"
-                    visible="false" press=".onMessagePopoverPress"/>
+                    visible="{=${message>/}.length > 0}" press=".messageHandler.onMessagePopoverPress"/>
                 <ToolbarSpacer/>
                 <ToolbarSpacer/>
                 <Button text="{i18n>Save}" type="Emphasized" press=".editFlow.onSave"/>

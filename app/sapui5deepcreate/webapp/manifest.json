@@ -3,7 +3,13 @@
     "sap.app": {
         "id": "udina.sample.sapui5deepcreate",
         "type": "application",
-        "i18n": "i18n/i18n.properties",
+        "i18n": {
+            "bundleUrl": "i18n/i18n.properties",
+            "supportedLocales": [
+                ""
+            ],
+            "fallbackLocale": ""
+        },
         "applicationVersion": {
             "version": "0.0.1"
         },
@@ -56,6 +62,7 @@
     },
     "sap.ui5": {
         "flexEnabled": true,
+        "handleValidation": true,
         "dependencies": {
             "minUI5Version": "1.108.0",
             "libs": {
@@ -75,7 +82,11 @@
             "i18n": {
                 "type": "sap.ui.model.resource.ResourceModel",
                 "settings": {
-                    "bundleName": "udina.sample.sapui5deepcreate.i18n.i18n"
+                    "bundleName": "udina.sample.sapui5deepcreate.i18n.i18n",
+                    "supportedLocales": [
+                        ""
+                    ],
+                    "fallbackLocale": ""
                 }
             },
             "": {
@@ -103,7 +114,10 @@
                 "viewPath": "udina.sample.sapui5deepcreate.view",
                 "controlAggregation": "pages",
                 "controlId": "app",
-                "clearControlAggregation": false
+                "clearControlAggregation": false,
+                "bypassed": {
+                    "target": "notFound"
+                }
             },
             "routes": [
                 {
@@ -120,19 +134,25 @@
             "targets": {
                 "ListReport": {
                     "viewId": "ListReport",
-                    "viewName": "ListReport"
+                    "viewName": "ListReport",
+                    "viewLevel": 1
                 },
                 "ObjectPage": {
                     "viewId": "ObjectPage",
-                    "viewName": "ObjectPage"
+                    "viewName": "ObjectPage",
+                    "viewLevel": 2
                 },
                 "objectNotFound": {
                     "viewName": "ObjectNotFound",
-                    "viewId": "objectNotFound"
+                    "viewId": "objectNotFound",
+                    "title": "{{ObjectNotFound}}",
+                    "viewLevel": 3
                 },
                 "notFound": {
                     "viewName": "NotFound",
-                    "viewId": "notFound"
+                    "viewId": "notFound",
+                    "title": "{{NotFound}}",
+                    "viewLevel": 3
                 }
             }
         },

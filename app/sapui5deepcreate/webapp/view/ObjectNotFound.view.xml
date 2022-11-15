@@ -1,8 +1,11 @@
 <mvc:View controllerName="udina.sample.sapui5deepcreate.controller.NotFound" 
     xmlns="sap.m" xmlns:mvc="sap.ui.core.mvc">
-    <MessagePage id="page" description="" icon="{sap-icon://product}" text="{i18n>noObjectFoundText}" title="{i18n>objectTitle}">
-        <customDescription>
-            <Link id="link" press=".onLinkPressed" text="{i18n>backToListReport}" />
-        </customDescription>
-    </MessagePage>
+    <IllustratedMessage
+        illustrationType="sapIllus-NoData" illustrationSize="Scene"
+        title="{i18n>ObjectNotFound.text}" 
+        description="{i18n>ObjectNotFound.description}">
+        <additionalContent>
+            <Button text="{i18n>ObjectNotFound.link}" type="Emphasized" press=".onNavBack"/>
+        </additionalContent>
+    </IllustratedMessage>
 </mvc:View>

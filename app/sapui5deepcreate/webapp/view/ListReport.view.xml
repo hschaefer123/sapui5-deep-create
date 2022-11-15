@@ -36,6 +36,7 @@
                     <OverflowToolbar>
                         <ToolbarSpacer/>
                         <Button text="{i18n>Create}" press=".onAdd" />
+                        <Button text="{i18n>NotFound.button}" press=".onNotFound" />
                         <!--<Button text="{i18n>Refresh}" press=".onRefresh" />-->
                         <ToolbarSeparator/>
                     </OverflowToolbar>                    

@@ -54,6 +54,10 @@ sap.ui.define([
             //console.log("onBeforeRebindTable", mBindingParams);
         },
 
+        onNotFound: function() {
+            this.getRouter().getTargets().display("notFound");
+        },
+
         onAdd: function () {
             var oRouter = this.getAppComponent().getRouter();
             //oRouter.getTargets().display("DeepCreate");
@@ -99,6 +103,7 @@ sap.ui.define([
          * If not, it navigates to the Fiori Launchpad home page.
          * @public
          */
+        /*
         onNavBack: function () {
             var oHistory = History.getInstance(),
                 sPreviousHash = oHistory.getPreviousHash();
@@ -108,6 +113,7 @@ sap.ui.define([
                 history.go(-1);
             }
         },
+        */
 
         /**
          * if navigated back with appstate enabled then rehydrate the page using the
