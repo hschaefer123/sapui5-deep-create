@@ -39,24 +39,30 @@
 			                </smartForm:layout>
                             <smartForm:Group>
                                 <smartForm:GroupElement>
-                                    <smartField:SmartField value="{PurchaseOrderByCustomer}"/>
-                                </smartForm:GroupElement>
-                                <smartForm:GroupElement>
                                     <smartField:SmartField value="{CustomerPurchaseOrderDate}"/>                                    
                                 </smartForm:GroupElement>
+                                <smartForm:GroupElement>
+                                    <smartField:SmartField value="{PurchaseOrderByCustomer}"/>
+                                </smartForm:GroupElement>                                
                             </smartForm:Group>
                         </smartForm:SmartForm>
                     </uxap:ObjectPageSubSection>
                 </uxap:subSections>
             </uxap:ObjectPageSection>
-            <uxap:ObjectPageSection title="{i18n>SalesOrderItems}" titleUppercase="false" showTitle="false">
+            <uxap:ObjectPageSection title="{i18n>SalesOrderItems}" titleUppercase="false" 
+                showTitle="false">
                 <uxap:subSections>
 					<uxap:ObjectPageSubSection>
-                        <Table id="itemTable" width="auto" items="{to_Item}">
+                        <Table id="itemTable" width="auto" updateFinished=".onItemUpdateFinished"
+                            items="{to_Item}">
                             <headerToolbar>
                                 <Toolbar>
+                                    <Title text="{i18n>SalesOrderItems} ({ui>/itemCount})"  titleStyle="H4"/>
                                     <ToolbarSpacer/>
-                                    <Button text="Add" visible="{ui>/isEditable}" press=".onAddItem"/>
+                                    <Button text="{i18n>Add}" visible="{ui>/isEditable}" 
+                                        press=".onAddItem"/>
+                                    <Button text="{i18n>ScanBarcode}" visible="{ui>/isEditable}"
+                                        press=".onBarcodeScan"/>
                                 </Toolbar>
                             </headerToolbar>
                             <columns>
@@ -127,11 +133,13 @@
                     </uxap:ObjectPageSubSection>
                 </uxap:subSections>
             </uxap:ObjectPageSection>
-            <uxap:ObjectPageSection title="{i18n>SalesOrderAttachments}" titleUppercase="false" showTitle="false">
+            <uxap:ObjectPageSection title="{i18n>SalesOrderAttachments}" titleUppercase="false" 
+                showTitle="false">
                 <uxap:subSections>
-					<uxap:ObjectPageSubSection>
+					<uxap:ObjectPageSubSection>                    
                         <upload:UploadSet
                             id="UploadSet"
+                            visible="{ui>/isEditable}" 
                             instantUpload="true"
                             uploadButtonInvisible="{= !${ui>/isEditable}}"
                             uploadEnabled="{ui>/isEditable}"                            
@@ -154,12 +162,25 @@
                                     fileName="{FileName}"
                                     mediaType="{MediaType}"
                                     url="{Url}"
-                                    thumbnailUrl="{ThumbnailUrl}">
+                                    thumbnailUrl="{ThumbnailUrl}"
+                                    openPressed=".pdfViewer.onUploadSetItemOpenPressed">
                                 </upload:UploadSetItem>
                             </upload:items>
                         </upload:UploadSet>
+                        <List headerText="{i18n>Attachments}" 
+                            visible="{=!${ui>/isEditable}}" 
+                            items="{path: 'to_Attachment', templateShareable: false}">
+                            <CustomListItem>
+                                <HBox class="sapUiSmallMargin" renderType="Bare" alignItems="Center">
+                                    <Avatar src="{ThumbnailUrl}" displayShape="Square" 
+                                        imageFitType="Cover"/>
+                                    <Link class="sapUiSmallMarginBegin" text="{FileName}" 
+                                        emphasized="true" press=".pdfViewer.onLinkPress"/>
+                                </HBox>		                            
+                            </CustomListItem>
+                        </List>                        
                     </uxap:ObjectPageSubSection>
-                </uxap:subSections>
+                </uxap:subSections>                
             </uxap:ObjectPageSection>
         </uxap:sections>
         <uxap:footer>

@@ -5,9 +5,10 @@ using udina.MockService as service from '../../srv/mock-service';
 //	SalesOrder Common
 //
 annotate service.SalesOrder with {
-    SalesOrder                @Common.IsDigitSequence : true;
-    PurchaseOrderByCustomer   @title                  : 'Customer Order';
-    CustomerPurchaseOrderDate @title                  : 'Requested Date';
+    SalesOrder                @title : '{i18n>SalesOrder}'  @Common.IsDigitSequence : true;
+    SalesOrderType            @title : '{i18n>SalesOrderType}';
+    PurchaseOrderByCustomer   @title : '{i18n>PurchaseOrderByCustomer}';
+    CustomerPurchaseOrderDate @title : '{i18n>CustomerPurchaseOrderDate}';
 };
 
 ////////////////////////////////////////////////////////////////////////////
@@ -21,8 +22,8 @@ annotate service.SalesOrder with @(
         Identification      : [{Value : SalesOrder}],
         // Properties that might be relevant for filtering a collection of entities of this type
         SelectionFields     : [
-            SalesOrder,
-            PurchaseOrderByCustomer
+            SalesOrderType,
+            CustomerPurchaseOrderDate
         ],
         // Defines how the result of a queried collection of entities is shaped and how this result is displayed
         PresentationVariant : {
@@ -41,9 +42,16 @@ annotate service.SalesOrder with @(
         // Collection of data fields for representation in a table or list
         LineItem            : {$value : [
             {Value : SalesOrder},
+            {Value : SalesOrderType},
             {Value : PurchaseOrderByCustomer}
         ]}
-    }
+    },
+    Capabilities       : {
+                          //SearchRestrictions : {Searchable : false},
+                         FilterRestrictions : {FilterExpressionRestrictions : [{
+        Property           : 'CustomerPurchaseOrderDate',
+        AllowedExpressions : 'SingleRange'
+    }]}}
 );
 
 ////////////////////////////////////////////////////////////////////////////
@@ -51,7 +59,40 @@ annotate service.SalesOrder with @(
 //	SalesOrderItem Common
 //
 annotate service.SalesOrderItem with {
-    RequestedQuantity     @title : 'Quantity';
-    RequestedQuantityUnit @title : 'Unit';
-    Material              @title : 'Material';
+    RequestedQuantity     @title : '{i18n>RequestedQuantity}';
+    RequestedQuantityUnit @title : '{i18n>RequestedQuantityUnit}';
+    Material              @title : '{i18n>Material}';
 };
+
+////////////////////////////////////////////////////////////////////////////
+//
+//	SalesOrder - Value Helps
+//
+annotate service.SalesOrder with {
+    SalesOrderType @Common : {
+        Text            : to_SalesOrderType.SalesOrderTypeName,
+        TextArrangement : #TextLast,
+        ValueListWithFixedValues,
+        ValueList       : {
+            CollectionPath : 'SalesOrderType',
+            Parameters     : [
+                {
+                    $Type             : 'Common.ValueListParameterInOut',
+                    LocalDataProperty : SalesOrderType,
+                    ValueListProperty : 'SalesOrderType'
+                },
+                {
+                    $Type             : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty : 'SalesOrderTypeName'
+                }
+            ]
+        }
+    };
+}
+
+annotate service.SalesOrderType with {
+    SalesOrderType @Common : {
+        Text            : SalesOrderTypeName,
+        TextArrangement : #TextLast
+    }
+}

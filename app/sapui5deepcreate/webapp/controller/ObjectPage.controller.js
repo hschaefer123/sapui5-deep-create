@@ -2,9 +2,11 @@ sap.ui.define([
     "udina/sample/sapui5deepcreate/controller/BaseController",
     "udina/sample/sapui5deepcreate/controller/ext/EditFlow",
     "udina/sample/sapui5deepcreate/controller/ext/MessageHandler",
+    "udina/sample/sapui5deepcreate/controller/ext/PDFViewer",
     "sap/ui/model/json/JSONModel",
-    "sap/ui/model/BindingMode"
-], function (BaseController, EditFlow, MessageHandler, JSONModel, BindingMode) {
+    "sap/ui/model/BindingMode",
+    "sap/ndc/BarcodeScanner"    
+], function (BaseController, EditFlow, MessageHandler, PDFViewer, JSONModel, BindingMode, BarcodeScanner) {
     "use strict";
 
     const EditMode = {
@@ -31,6 +33,7 @@ sap.ui.define([
         // add used extensions
         editFlow: EditFlow,
         messageHandler: MessageHandler,
+        pdfViewer: PDFViewer,
 
         onInit: function () {
             var iOriginalBusyDelay;
@@ -44,10 +47,12 @@ sap.ui.define([
                 busy: true,
                 delay: 0,
                 editMode: EditMode.Display,
-                isEditable: false
+                isEditable: false,
+                itemCount: 0
             })
             oUiModel.setDefaultBindingMode(BindingMode.OneWay);
             this.getView().setModel(oUiModel, "ui");
+            this._oUiModel = oUiModel;
 
             // handle current route
             this.getRouter().getRoute("object").attachPatternMatched(this._onObjectMatched, this);
@@ -56,10 +61,32 @@ sap.ui.define([
             // this.editFlow.onBeforeSave = this.onEditFlowBeforeSave;
         },
 
+        onBarcodeScan: function () {
+            var that = this;
+            BarcodeScanner.scan(
+                function (mResult) {
+                    var sCode = mResult.text;
+                    //console.log("onBarcodeScan", mResult, sCode);
+                    if (sCode) {
+                        that._addItem({ Material: sCode });
+                    }
+                },
+                function (sError) {
+                    // TODO: i18n text
+                    //that.getUtil().messageToast("Scan failed: " + sError);        
+                }
+            );
+        },
+
+        onItemUpdateFinished: function (oEvent) {
+            var iTotal = oEvent.getParameter("total");
+            this._oUiModel.setProperty("/itemCount", iTotal);
+        },
+
         /*
         onSmartTableInitialize: function() {
             console.log("smt init");
-            this._addItem(true);
+            this._addItem();
         },
         */
 
@@ -120,11 +147,13 @@ sap.ui.define([
             if (bEditable) {
                 // create transient context for root entity (sales order)
                 this.editFlow.createDocument("/SalesOrder", {
-                    PurchaseOrderByCustomer: "Your order info"
+                    CustomerPurchaseOrderDate: new Date(),
+                    PurchaseOrderByCustomer: ""
                 });
 
-                // create transient context for subentity (sales order line item) and display it in the items table
-                this._addItem(true);
+                // create transient context for subentity (sales order line item) 
+                // and display it in the items table (use placeholder)
+                this._addItem();
 
                 oViewModel.setProperty("/busy", false);
             } else {
@@ -170,25 +199,25 @@ sap.ui.define([
             oViewModel.setProperty("/busy", false);
         },
 
-        _addItem: function (bDemoMaterial) {
-            var oTable = this.byId("itemTable"),
-                oBinding = oTable.getBinding("items");
-            
-            if (oBinding) {
-                // create transient context for subentity (sales order line item) 
-                oBinding.create({
-                    RequestedQuantity: 1.000,
-                    RequestedQuantityUnit: "PC",
-                    Material: (bDemoMaterial) ? "TG11" : null
-                }, true); // insert at end                
-            } else {
-                console.log("no binding");
-            }
-            
+        _addItem: function (oDefaultData) {
             /*
             var oSmartTable = this.byId("smartTableItems");
             oSmartTable.rebindTable(true);
             */
+            var oTable = this.byId("itemTable"),
+                oBinding = oTable.getBinding("items");
+
+            var oData = {
+                RequestedQuantity: 1.0,
+                RequestedQuantityUnit: "PC"
+            };
+
+            if (oDefaultData) {
+                oData = Object.assign(oDefaultData, oData);
+            }
+
+            // create transient context for subentity (sales order line item) 
+            oBinding.create(oData, true); // insert at end                
         }
 
     });

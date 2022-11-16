@@ -10,6 +10,11 @@ extend projection MockService.SalesOrder with {
                         on to_Attachment.SalesOrder = SalesOrder
 }
 
+extend projection MockService.SalesOrder with {
+    to_SalesOrderType : Association to SalesOrderType
+                            on to_SalesOrderType.SalesOrderType = SalesOrderType
+}
+
 @cds.persistence.table
 entity Attachment {
     key SalesOrder   : String(10); //> foreign key
@@ -21,6 +26,13 @@ entity Attachment {
         Data         : String(50000); // Binary Data as Base64 for Upload
 }
 
+@cds.persistence.table
+entity SalesOrderType {
+    key SalesOrderType     : String(4);
+        SalesOrderTypeName : String(20);
+}
+
 extend service MockService with {
-    entity Attachment as select from my.Attachment;
+    entity Attachment     as select from my.Attachment;
+    entity SalesOrderType as select from my.SalesOrderType;
 }

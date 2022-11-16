@@ -27,7 +27,7 @@
                 persistencyKey="udina.sample.sapui5deepcreate.view.ListReport.SmartTable"
 				entitySet="SalesOrder" enableAutoBinding="true" enableAutoColumnWidth="true"                
                 smartFilterId="smartFilterBar" showRowCount="true" 
-                initiallyVisibleFields="SalesOrder,PurchaseOrderByCustomer,CustomerPurchaseOrderDate"
+                initiallyVisibleFields="SalesOrder,SalesOrderType,CustomerPurchaseOrderDate,PurchaseOrderByCustomer"
                 beforeRebindTable=".onBeforeRebindTable">
                 <smartTable:layoutData>
 					<FlexItemData growFactor="1" baseSize="0%"/>
@@ -48,7 +48,7 @@
                                 <core:CustomData key="p13nData"
                                     value='\{"columnKey": "ItemInfo", "columnIndex": 9, "XnavigationProperty": "to_Item", "additionalProperty": "to_Item/RequestedQuantity,to_Item/Material"}' />
                             </customData>
-                            <Text text="{i18n>RequestedItems}" />
+                            <Text text="{i18n>SalesOrderItems}" />
                         </Column>
                     </columns>
                     <items>

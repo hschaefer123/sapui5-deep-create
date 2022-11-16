@@ -18,6 +18,7 @@ module.exports = async function () {
 
         // add next id
         salesOrder.SalesOrder = id;
+        salesOrder.SalesOrderType = "OR"; // default Standard Order
 
         // item handling
         let salesOrderItems = salesOrder.to_Item;
@@ -60,10 +61,15 @@ module.exports = async function () {
                 let pos = "000000" + i * 10;
                 item.SalesOrder = id;
                 item.Item = pos.substring(pos.length - 6);
+                // removing data footprint only relevant for server side processing
+                delete item.Data 
                 i++;
             }
         }
-        console.log("Attachments", salesOrderAttachments);        
+        //console.log("Attachments", salesOrderAttachments);        
+
+        // now read the items to salesorder to be able to return deep object (auto refresh)        
+        salesOrder.to_Attachment = salesOrderAttachments;
 
         // return custom deep structure to allow UI5 binding updates with filled keys
         req.reply(salesOrder);

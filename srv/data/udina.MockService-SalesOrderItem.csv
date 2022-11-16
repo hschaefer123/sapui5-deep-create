@@ -1,3 +1,4 @@
 SalesOrder,SalesOrderItem,HigherLevelItem,RequestedQuantity,RequestedQuantityUnit,Material,SalesOrderItemCategory,PurchaseOrderByCustomer,DeliveryPriority
 0000000001,000010,0,1.000,PC,TG11,TAN,Simulated via OData API,2
 0000000001,000020,0,3.000,PC,R2D2,TAN,Simulated via OData API,2
+0000000002,000010,0,1.000,PC,R2D2C3PO,TAN,Barcode Scanner Material,2

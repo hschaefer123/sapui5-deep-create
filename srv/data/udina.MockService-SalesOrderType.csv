@@ -1,0 +1,12 @@
+SalesOrderType,SalesOrderTypeName
+IN,Inquiry
+QT,Quotation
+OR,Standard Order
+RE,Returns Order
+CR,Credit Memo Request
+DR,Debit Memo Request
+LF,Outbound Delivery Document
+LR,Returns Delivery
+F2,Sales Invoice
+G2,Credit Memo
+L2,Debit Memo
