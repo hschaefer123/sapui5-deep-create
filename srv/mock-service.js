@@ -5,7 +5,6 @@ module.exports = async function () {
     const { SalesOrder, SalesOrderItem } = this.entities // get reflected definitions
 
     this.on('POST', 'SalesOrder', async (req, next) => {
-        console.log("UDINA SalesOrder POST");
         // this is a simulation of ABAP SEGW DeepCreate handling only!!!
         // this is not the way of doing this with CAP ;-)
 
@@ -24,6 +23,12 @@ module.exports = async function () {
         let salesOrderItems = salesOrder.to_Item;
         let salesOrderAttachments = salesOrder.to_Attachment;
         // remove items prior create, because CAP does not allow deep manipulation
+
+        // External Models uses to_Item Association, but CAP needs Composition to allow DeepCreate
+        // Error -> It is not allowed to modify sub documents in to-many Association
+        // This would work for to_Attachment, because it uses Composition (Contained-In relationship)
+        // ToDo: Maybe CSN relationship can also be overwritten by extension
+
         delete salesOrder.to_Item;
         delete salesOrder.to_Attachment;
 
