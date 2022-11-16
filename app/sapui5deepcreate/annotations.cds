@@ -45,3 +45,13 @@ annotate service.SalesOrder with @(
         ]}
     }
 );
+
+////////////////////////////////////////////////////////////////////////////
+//
+//	SalesOrderItem Common
+//
+annotate service.SalesOrderItem with {
+    RequestedQuantity     @title : 'Quantity';
+    RequestedQuantityUnit @title : 'Unit';
+    Material              @title : 'Material';
+};

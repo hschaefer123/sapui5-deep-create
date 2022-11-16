@@ -56,6 +56,13 @@ sap.ui.define([
             // this.editFlow.onBeforeSave = this.onEditFlowBeforeSave;
         },
 
+        /*
+        onSmartTableInitialize: function() {
+            console.log("smt init");
+            this._addItem(true);
+        },
+        */
+
         onEditFlowBeforeSave: function (mParameters) {
             return Promise.reject("not confirmed by user");
         },
@@ -164,15 +171,24 @@ sap.ui.define([
         },
 
         _addItem: function (bDemoMaterial) {
-            var oItemsTable = this.byId("itemTable"),
-                oItemsBinding = oItemsTable.getBinding("items");
-
-            // create transient context for subentity (sales order line item) 
-            oItemsBinding.create({
-                RequestedQuantity: 1.000,
-                RequestedQuantityUnit: "PC",
-                Material: (bDemoMaterial) ? "TG11" : null
-            }, true); // insert at end
+            var oTable = this.byId("itemTable"),
+                oBinding = oTable.getBinding("items");
+            
+            if (oBinding) {
+                // create transient context for subentity (sales order line item) 
+                oBinding.create({
+                    RequestedQuantity: 1.000,
+                    RequestedQuantityUnit: "PC",
+                    Material: (bDemoMaterial) ? "TG11" : null
+                }, true); // insert at end                
+            } else {
+                console.log("no binding");
+            }
+            
+            /*
+            var oSmartTable = this.byId("smartTableItems");
+            oSmartTable.rebindTable(true);
+            */
         }
 
     });

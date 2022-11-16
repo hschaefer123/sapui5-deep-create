@@ -2,6 +2,7 @@
     xmlns:app="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1"
     xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:l="sap.ui.layout" xmlns:mvc="sap.ui.core.mvc" 
     xmlns:smartForm="sap.ui.comp.smartform" xmlns:smartField="sap.ui.comp.smartfield"
+    xmlns:smartTable="sap.ui.comp.smarttable"
     xmlns:upload="sap.m.upload" xmlns:uxap="sap.uxap">
     <uxap:ObjectPageLayout id="ObjectPageLayout" showTitleInHeaderContent="true" 
         busy="{ui>/busy}" busyIndicatorDelay="{ui>/delay}"
@@ -27,7 +28,7 @@
 			</FlexBox>
         </uxap:headerContent>
         <uxap:sections>
-            <uxap:ObjectPageSection titleUppercase="false" title="Head">
+            <uxap:ObjectPageSection titleUppercase="false" title="{i18n>SalesOrderHead}">
                 <uxap:subSections>
 					<uxap:ObjectPageSubSection>
                         <smartForm:SmartForm id="SmartForm" editable="{ui>/isEditable}"
@@ -48,7 +49,7 @@
                     </uxap:ObjectPageSubSection>
                 </uxap:subSections>
             </uxap:ObjectPageSection>
-            <uxap:ObjectPageSection titleUppercase="false" title="Items">
+            <uxap:ObjectPageSection title="{i18n>SalesOrderItems}" titleUppercase="false" showTitle="false">
                 <uxap:subSections>
 					<uxap:ObjectPageSubSection>
                         <Table id="itemTable" width="auto" items="{to_Item}">
@@ -85,10 +86,48 @@
                                 </ColumnListItem>
                             </items>
                         </Table>
+                        <!-- Too many issues with SmartTable like editable only works onetime, eutoBinding not working -> rebindTable 
+                        <smartTable:SmartTable id="smartTableItems" showRowCount="true" 
+                            header="{i18n>SalesOrderItems}" tableType="ResponsiveTable"
+                            editable="{ui>/isEditable}"
+                            entitySet="SalesOrderItem" tableBindingPath="to_Item" enableAutoBinding="true" 
+                            enableAutoColumnWidth="true"                                            
+                            initiallyVisibleFields="RequestedQuantity,RequestedQuantityUnit,Material"
+                            initialise=".onSmartTableInitialize">
+                            <smartTable:layoutData>
+                                <FlexItemData growFactor="1" baseSize="0%"/>
+                            </smartTable:layoutData>
+                            <smartTable:customToolbar>
+                                <OverflowToolbar>
+                                    <ToolbarSpacer/>
+                                    <Button text="Add" visible="{ui>/isEditable}" press=".onAddItem"/>
+                                    <ToolbarSeparator/>
+                                </OverflowToolbar>                    
+                            </smartTable:customToolbar>
+                            <Table id="itemTable">
+                                <columns>
+                                    <Column width="12em">
+                                        <customData>
+                                            <core:CustomData key="p13nData"
+                                                value='\{"columnKey": "RequestedQuantity", "columnIndex": 0}' />
+                                        </customData>
+                                        <Text text="{/SalesOrderItem/RequestedQuantity/#@sap:label}"/>
+                                    </Column>
+                                </columns>
+                                <items>
+                                    <ColumnListItem>
+                                        <cells>
+                                            <StepInput value="{RequestedQuantity}" editable="{ui>/isEditable}"/>
+                                        </cells>
+                                    </ColumnListItem>
+                                </items>
+                            </Table>                    
+                        </smartTable:SmartTable>
+                        -->
                     </uxap:ObjectPageSubSection>
                 </uxap:subSections>
             </uxap:ObjectPageSection>
-            <uxap:ObjectPageSection titleUppercase="false" title="Attachments">
+            <uxap:ObjectPageSection title="{i18n>SalesOrderAttachments}" titleUppercase="false" showTitle="false">
                 <uxap:subSections>
 					<uxap:ObjectPageSubSection>
                         <upload:UploadSet
@@ -103,6 +142,13 @@
                             mediaTypes="text/plain,application/msword,application/pdf,image/svg+xml,image/jpeg,image/png"
                             items="{path: 'to_Attachment', templateShareable: false}"
                             mode="None">
+                            <upload:toolbar>
+                                <OverflowToolbar>
+                                    <Title text="{i18n>Attachments}" titleStyle="H4"/>
+                                    <ToolbarSpacer/>
+                                    <upload:UploadSetToolbarPlaceholder />
+                                </OverflowToolbar>
+                            </upload:toolbar>
                             <upload:items>
                                 <upload:UploadSetItem
                                     fileName="{FileName}"
