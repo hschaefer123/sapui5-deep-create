@@ -62,6 +62,60 @@ sap.ui.define([
 
         onContextCreated: function (oContext) { },
 
+        onUploadCompleted: function (oEvent) {
+            return;
+
+            var oItem = oEvent.getParameter("item"),
+                oContext = oItem.getBindingContext("undefined"),
+                oModel = oContext.getModel(),
+                oFileObject = oItem.getFileObject(),
+                oReader = new FileReader(),
+                oUploadSetBinding = this.base.byId("UploadSet").getBinding("items");
+
+            console.log(oItem, oContext, oUploadSetBinding);
+            //oContext.getPath() = "/SalesOrder('id-1668682800581-39')"
+            
+            oReader.onload = function () {        
+                /* 1) set property Data on context
+                **    not working, because item binding context is SalesOrder?!?
+                **    oContext.getPath() = "/SalesOrder('id-1668682800581-39')"
+                */
+                oModel.setProperty(
+                    oContext.getPath(), 
+                    oReader.result.split(",")[1],
+                    oContext
+                );
+                console.log("onUploadCompleted", oContext.getObject());
+
+                /* 2) manually create additional entry
+                **    works and submits relevant data with to_Attachment,
+                **    but after deletion creates duplicated entry
+                */
+                var oNewContext = oUploadSetBinding.create(({
+                    // support renamed fileName instead origin
+                    "FileName": oItem.getFileName(),
+                    "MediaType": oFileObject.type,
+                    "Data": oReader.result.split(",")[1]
+                }), true); // insert at end      
+                console.log("oNewContext", oNewContext);
+                /*
+                sDeepPath: "/SalesOrder('id-1668682132388-39')/to_Attachment('id-1668682138434-59')"
+                sPath: "/Attachment('id-1668682138434-59')"
+                */
+            };
+
+            oReader.readAsDataURL(oFileObject);
+        },
+
+        onUploadItemRemoved: function(oEvent) {            
+            var oItem = oEvent.getParameter("item"),
+                oFileName = oItem.getFileName(),
+                oItemsBinding = this.base.byId("UploadSet").getBinding("items");
+
+            //console.log("onUploadItemRemoved", oFileName, oItemsBinding);
+            //oContext.delete();
+        },
+
         /* =========================================================== */
         /* Public functions                                            */
         /* =========================================================== */
@@ -297,6 +351,10 @@ sap.ui.define([
             });
         },
 
+        /* =========================================================== */
+        /* attachment handling                                         */
+        /* =========================================================== */
+
         _processUploadCollection: function (oUploadSet) {
             var aAttachment = [];
 
@@ -325,7 +383,8 @@ sap.ui.define([
                             oReader.onload = function () {
                                 var sBase64 = oReader.result.split(",")[1];
                                 aAttachment.push({
-                                    "FileName": oFileObject.name,
+                                    // support renamed fileName instead origin
+                                    "FileName": oFile.getFileName(), 
                                     "MediaType": oFileObject.type,
                                     "Data": sBase64
                                 });

@@ -152,7 +152,9 @@
                             maxFileSize="5000"
                             mediaTypes="text/plain,application/msword,application/pdf,image/svg+xml,image/jpeg,image/png"
                             items="{path: 'to_Attachment', templateShareable: false}"
-                            mode="None">
+                            mode="None"
+                            uploadCompleted=".editFlow.onUploadCompleted"
+                            afterItemRemoved=".editFlow.onUploadItemRemoved">
                             <upload:toolbar>
                                 <OverflowToolbar>
                                     <Title text="{i18n>Attachments}" titleStyle="H4"/>
