@@ -40,8 +40,7 @@ sap.ui.define([
                 aFilters = mBindingParams.filters,
                 aSorter = mBindingParams.sorter,
                 oParameters = mBindingParams.parameters,
-                sSearch = (oParameters && oParameters.custom) ? oParameters.custom.search : null,
-                i;
+                sSearch = (oParameters && oParameters.custom) ? oParameters.custom.search : null;
 
             // Sort annotation is not taken intro account by SmartTable!!!
             // handle manifest default dynamic sorter if no sort order is given

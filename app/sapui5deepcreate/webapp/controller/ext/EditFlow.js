@@ -1,8 +1,9 @@
 sap.ui.define([
     "sap/ui/core/mvc/ControllerExtension",
     "sap/ui/core/mvc/OverrideExecution",
+    "sap/ui/core/ValueState",
     "sap/base/Log"
-], function (ControllerExtension, OverrideExecution, Log) {
+], function (ControllerExtension, OverrideExecution, ValueState, Log) {
     "use strict";
 
     /**
@@ -51,12 +52,12 @@ sap.ui.define([
             this._navBack();
         },
 
-        onSave: function () {
-            this.saveDocument(this.getContext());
+        onSave: function (oEvent) {
+            this.saveDocument(this.getContext(), oEvent.getSource());
         },
 
-        onSavePreProcessed: function () {
-            this.saveDocumentPreProcessed(this.getContext());
+        onSavePreProcessed: function (oEvent) {
+            this.saveDocumentPreProcessed(this.getContext(), oEvent.getSource());
         },
 
         onContextCreated: function (oContext) { },
@@ -140,10 +141,17 @@ sap.ui.define([
          *
          * @public
          */
-        saveDocument: function (oContext) {
+        saveDocument: function (oContext, oButton) {
             return new Promise(async function (fnResolve, fnReject) {
                 try {
-                    //await this._checkForValidationErrors();
+                    var bValid = await this._checkForValidationErrors();
+
+                    if (!bValid) {
+                        return;
+                    }
+
+                    // disable save button while processing
+                    oButton.setBusy(true);
 
                     await this.base.editFlow.onBeforeSave({ context: oContext });
 
@@ -157,20 +165,32 @@ sap.ui.define([
                     //this.base.getAppComponent().getRouter().navTo("list");
                     this._navToContext(oContext);
 
+                    oButton.setBusy(false);
+
                     fnResolve();
                 } catch (oError) {
                     Log.error("saveDocument",
                         JSON.stringify(oError),
                         this.getMetadata().getName()
                     );
+                    oButton.setBusy(false);
                     fnReject(oError);
                 }
             }.bind(this));
         },
 
-        saveDocumentPreProcessed: async function (oContext) {
+        saveDocumentPreProcessed: async function (oContext, oButton) {
             return new Promise(async function (fnResolve, fnReject) {
                 try {
+                    var bValid = await this._checkForValidationErrors();
+
+                    if (!bValid) {
+                        return;
+                    }
+
+                    // disable save button while processing
+                    oButton.setBusy(true);
+
                     await this.base.editFlow.onBeforeSave({ context: oContext });
 
                     var oDataModel = oContext.getModel(),
@@ -194,6 +214,7 @@ sap.ui.define([
                         JSON.stringify(oError),
                         this.getMetadata().getName()
                     );
+                    oButton.setBusy(false);
                     fnReject(oError);
                 }
             }.bind(this));
@@ -324,6 +345,126 @@ sap.ui.define([
                     fnResolve(aAttachment)
                 }
             });
+        },
+
+        /* =========================================================== */
+        /* validation handling                                         */
+        /* =========================================================== */
+
+        /**
+         * validation of the newly created or changed notification
+         *
+         * @returns {boolean} entity is valid?
+         * @public
+         */
+        _checkForValidationErrors: function () {
+            var bValid = (!this._checkAndMarkEmptyMandatoryFields(true)
+                && !this._fieldWithErrorState());
+
+            return bValid;
+        },
+
+        /**
+         * If flag bErrorsMarked is set to true, the empty mandatory fields are set to value state of error
+         * @param {boolean} bErrorsMarked flag if errors are marked
+         * @return {boolean} errrors were found?
+         * @private
+         */
+        _checkAndMarkEmptyMandatoryFields: function (bErrorsMarked) {
+            var bErrors = false;
+
+            // Check that inputs are not empty or space.
+            // This does not happen during data binding because this is only triggered by changes.
+            this._getMandatoryFields().forEach(function (oInput) {
+                if (oInput && oInput.getValue) {
+                    if (!oInput.getValue() || oInput.getValue().trim() === "") {
+                        bErrors = true;
+                        if (bErrorsMarked) {
+                            //console.log("_checkAndMarkEmptyMandatoryFields", input);
+                            oInput.setValueState(ValueState.Error);
+                        }
+                    } else {
+                        oInput.setValueState(ValueState.None);
+                    }
+                } else if (oInput && oInput.getSelectedItem) {
+                    if (!oInput.getSelectedItem()
+                        || oInput.getSelectedItem().getText().trim() === "") {
+                        bErrors = true;
+                        if (bErrorsMarked) {
+                            oInput.setValueState(ValueState.Error);
+                        }
+                    } else {
+                        oInput.setValueState(ValueState.None);
+                    }
+                } else if (oInput && oInput.getSelectedButton) {
+                    if (!oInput.getSelectedButton()) {
+                        bErrors = true;
+                        if (bErrorsMarked) {
+                            oInput.setValueState(ValueState.Error);
+                        }
+                    } else {
+                        oInput.setValueState(ValueState.None);
+                    }
+                }
+            });
+
+            return bErrors;
+        },
+
+        /**
+         * Internal helper method to retrieve mandatory fields
+         * @return {[object]} array of mandatory fields
+         * @private
+         */
+        _getMandatoryFields: function () {
+            var aMandatoryFields = [],
+                domElements = document.querySelectorAll("#" + this.base.getView().getId() + " *");
+
+            // retrieve all elements of this view and check ValueState if available
+            domElements.forEach(function (domEl) {
+                if (!$(domEl).control) {
+                    return;
+                }
+                var oControl = $(domEl).control(0);
+
+                if (oControl) {
+                    // add mandatory smartfields
+                    if (oControl.isA("sap.ui.comp.smartfield.SmartField")
+                        && oControl.getEditable()
+                        && oControl.getMandatory()) {
+                        aMandatoryFields.push(oControl);
+                    } else if (oControl.data("mandatory")
+                        && oControl.data("mandatory") === "true") {
+                        // add controls with CustomData cd:mandatory="true"
+                        aMandatoryFields.push(oControl);
+                    }
+                }
+            });
+
+            return aMandatoryFields;
+        },
+
+        /**
+         * checks fields for error state
+         * @return {boolean} fields with error state?
+         * @private
+         */
+        _fieldWithErrorState: function () {
+            var bError = false,
+                domElements = document.querySelectorAll("#" + this.base.getView().getId() + " *");
+
+            domElements.forEach(function (domEl) {
+                if ($(domEl).control) {
+                    var oControl = $(domEl).control(0);
+                    if (oControl
+                        && oControl.getValueState
+                        && oControl.getValueState() === ValueState.Error) {
+                        bError = true;
+                    }
+                }
+            });
+
+            return bError;
         }
 
     });

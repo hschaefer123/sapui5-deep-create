@@ -5,7 +5,7 @@ sap.ui.define([
     "udina/sample/sapui5deepcreate/controller/ext/PDFViewer",
     "sap/ui/model/json/JSONModel",
     "sap/ui/model/BindingMode",
-    "sap/ndc/BarcodeScanner"    
+    "sap/ndc/BarcodeScanner"
 ], function (BaseController, EditFlow, MessageHandler, PDFViewer, JSONModel, BindingMode, BarcodeScanner) {
     "use strict";
 
@@ -99,6 +99,18 @@ sap.ui.define([
         },
 
         onDeleteItem: function (oEvent) {
+            var oList = oEvent.getSource(),
+                oItem = oEvent.getParameter("listItem"),
+                oContext = oItem.getBindingContext();
+
+            // after deletion put the focus back to the list
+            oList.attachEventOnce("updateFinished", oList.focus, oList);
+
+            // send a delete request to the odata service
+            oContext.delete();
+        },
+
+        onDeleteItemOld: function (oEvent) {
             var oItem = oEvent.getSource(),
                 oContext = oItem.getBindingContext();
 
@@ -116,9 +128,17 @@ sap.ui.define([
                 sObjectPath;
 
             if (sKey) {
+                // display mode
                 sObjectPath = "/" + this.getModel().createKey("SalesOrder", {
                     SalesOrder: sKey
                 });
+            } else {
+                // edit mode
+                //this.getView().attachEventOnce("afterRendering", function() {                
+                //}, this);
+
+                // focus first editable field
+                this.byId("SmartForm").setFocusOnEditableControl();
             }
 
             this._bindView(sObjectPath);
@@ -217,7 +237,14 @@ sap.ui.define([
             }
 
             // create transient context for subentity (sales order line item) 
-            oBinding.create(oData, true); // insert at end                
+            oBinding.create(oData, true); // insert at end                        
+
+            // after adding put the focus on the newly create item
+            oTable.attachEventOnce("updateFinished", function () {
+                var aItems = oTable.getItems(),
+                    oItem = aItems[aItems.length - 1];
+                oItem.focus();
+            }, oTable);
         }
 
     });

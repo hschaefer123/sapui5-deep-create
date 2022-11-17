@@ -5,10 +5,10 @@ using udina.MockService as service from '../../srv/mock-service';
 //	SalesOrder Common
 //
 annotate service.SalesOrder with {
-    SalesOrder                @title : '{i18n>SalesOrder}'  @Common.IsDigitSequence : true;
-    SalesOrderType            @title : '{i18n>SalesOrderType}';
-    PurchaseOrderByCustomer   @title : '{i18n>PurchaseOrderByCustomer}';
-    CustomerPurchaseOrderDate @title : '{i18n>CustomerPurchaseOrderDate}';
+    SalesOrder                 @title : '{i18n>SalesOrder}'                 @Common.IsDigitSequence : true;
+    SalesOrderType             @title : '{i18n>SalesOrderType}';
+    PurchaseOrderByCustomer    @title : '{i18n>PurchaseOrderByCustomer}';
+    CustomerPurchaseOrderDate  @title : '{i18n>CustomerPurchaseOrderDate}'  @Common.FieldControl    : #Mandatory;
 };
 
 ////////////////////////////////////////////////////////////////////////////
@@ -59,9 +59,9 @@ annotate service.SalesOrder with @(
 //	SalesOrderItem Common
 //
 annotate service.SalesOrderItem with {
-    RequestedQuantity     @title : '{i18n>RequestedQuantity}';
-    RequestedQuantityUnit @title : '{i18n>RequestedQuantityUnit}';
-    Material              @title : '{i18n>Material}';
+    RequestedQuantity      @title : '{i18n>RequestedQuantity}'      @Common.FieldControl : #Mandatory;
+    RequestedQuantityUnit  @title : '{i18n>RequestedQuantityUnit}'  @Common.FieldControl : #Mandatory;
+    Material               @title : '{i18n>Material}'               @Common.FieldControl : #Mandatory;
 };
 
 ////////////////////////////////////////////////////////////////////////////

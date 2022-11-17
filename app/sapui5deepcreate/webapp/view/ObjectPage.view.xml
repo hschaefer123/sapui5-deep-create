@@ -4,9 +4,10 @@
     xmlns:smartForm="sap.ui.comp.smartform" xmlns:smartField="sap.ui.comp.smartfield"
     xmlns:smartTable="sap.ui.comp.smarttable"
     xmlns:upload="sap.m.upload" xmlns:uxap="sap.uxap">
-    <uxap:ObjectPageLayout id="ObjectPageLayout" showTitleInHeaderContent="true" 
+    <uxap:ObjectPageLayout id="ObjectPageLayout" showTitleInHeaderContent="true"         
         busy="{ui>/busy}" busyIndicatorDelay="{ui>/delay}"
-        upperCaseAnchorBar="false" showFooter="{ui>/isEditable}">
+        showHeaderContent="{= !${ui>/isEditable}}" upperCaseAnchorBar="false"
+        showFooter="{ui>/isEditable}">
         <uxap:headerTitle>
             <uxap:ObjectPageDynamicHeaderTitle id="ObjectPageHeader">
                 <uxap:expandedHeading>
@@ -28,7 +29,8 @@
 			</FlexBox>
         </uxap:headerContent>
         <uxap:sections>
-            <uxap:ObjectPageSection titleUppercase="false" title="{i18n>SalesOrderHead}">
+            <uxap:ObjectPageSection id="SalesOrderHead" title="{i18n>SalesOrderHead}"
+                titleUppercase="false">
                 <uxap:subSections>
 					<uxap:ObjectPageSubSection>
                         <smartForm:SmartForm id="SmartForm" editable="{ui>/isEditable}"
@@ -39,21 +41,24 @@
 			                </smartForm:layout>
                             <smartForm:Group>
                                 <smartForm:GroupElement>
-                                    <smartField:SmartField value="{CustomerPurchaseOrderDate}"/>                                    
+                                    <smartField:SmartField id="CustomerPurchaseOrderDate" 
+                                        value="{CustomerPurchaseOrderDate}"/>
                                 </smartForm:GroupElement>
                                 <smartForm:GroupElement>
-                                    <smartField:SmartField value="{PurchaseOrderByCustomer}"/>
+                                    <smartField:SmartField id="PurchaseOrderByCustomer"
+                                        value="{PurchaseOrderByCustomer}"/>
                                 </smartForm:GroupElement>                                
                             </smartForm:Group>
                         </smartForm:SmartForm>
                     </uxap:ObjectPageSubSection>
                 </uxap:subSections>
             </uxap:ObjectPageSection>
-            <uxap:ObjectPageSection title="{i18n>SalesOrderItems}" titleUppercase="false" 
-                showTitle="false">
+            <uxap:ObjectPageSection id="SalesOrderItems" title="{i18n>SalesOrderItems}" 
+                titleUppercase="false" showTitle="false">
                 <uxap:subSections>
 					<uxap:ObjectPageSubSection>
                         <Table id="itemTable" width="auto" updateFinished=".onItemUpdateFinished"
+                            mode="Delete" delete=".onDeleteItem"
                             items="{to_Item}">
                             <headerToolbar>
                                 <Toolbar>
@@ -75,19 +80,17 @@
                                 <Column>
                                     <Label text="Material"/>
                                 </Column>
-                                <Column width="3em" visible="{ui>/isEditable}"/>
                             </columns>
                             <items>
                                 <ColumnListItem>
                                     <cells>
-                                        <StepInput value="{RequestedQuantity}"
+                                        <!-- use valuePrecision to allow floats -->
+                                        <StepInput value="{RequestedQuantity}" min="1"
                                             editable="{ui>/isEditable}"/>
                                         <smartField:SmartField value="{RequestedQuantityUnit}" 
                                             editable="{ui>/isEditable}"/>
                                         <smartField:SmartField value="{Material}"
                                             editable="{ui>/isEditable}"/>
-                                        <Button icon="sap-icon://delete" type="Reject" 
-                                            visible="{ui>/isEditable}" press=".onDeleteItem"/>
                                     </cells>
                                 </ColumnListItem>
                             </items>
@@ -133,8 +136,8 @@
                     </uxap:ObjectPageSubSection>
                 </uxap:subSections>
             </uxap:ObjectPageSection>
-            <uxap:ObjectPageSection title="{i18n>SalesOrderAttachments}" titleUppercase="false" 
-                showTitle="false">
+            <uxap:ObjectPageSection id="SalesOrderAttachments" title="{i18n>SalesOrderAttachments}" 
+                titleUppercase="false" showTitle="false">
                 <uxap:subSections>
 					<uxap:ObjectPageSubSection>                    
                         <upload:UploadSet
@@ -167,7 +170,7 @@
                                 </upload:UploadSetItem>
                             </upload:items>
                         </upload:UploadSet>
-                        <List headerText="{i18n>Attachments}" 
+                        <List id="SalesOrderAttachmentList" headerText="{i18n>Attachments}" 
                             visible="{=!${ui>/isEditable}}" 
                             items="{path: 'to_Attachment', templateShareable: false}">
                             <CustomListItem>
@@ -186,10 +189,12 @@
         <uxap:footer>
             <OverflowToolbar>
                 <Button icon="sap-icon://alert" text="{= ${message>/}.length }" type="Emphasized"
-                    visible="{=${message>/}.length > 0}" press=".messageHandler.onMessagePopoverPress"/>
+                    visible="{=${message>/}.length > 0}" busyIndicatorDelay="0" 
+                    press=".messageHandler.onMessagePopoverPress"/>
                 <ToolbarSpacer/>
                 <ToolbarSpacer/>
-                <Button text="{i18n>Save}" type="Emphasized" press=".editFlow.onSave"/>
+                <Button text="{i18n>Save}" type="Emphasized" busyIndicatorDelay="0" 
+                    press=".editFlow.onSave"/>
                 <Button text="{i18n>SavePreProcessed}" press=".editFlow.onSavePreProcessed"/>
                 <Button text="{i18n>Cancel}" press=".editFlow.onCancel"/>
             </OverflowToolbar>

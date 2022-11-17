@@ -18,7 +18,7 @@
                     persistencyKey="udina.sample.sapui5deepcreate.view.ListReport.FilterBar"
                     entitySet="SalesOrder" liveMode="true"
                     enableBasicSearch="true" basicSearchFieldName="SalesOrder"
-                    search=".onSearch"/>
+                    useDateRangeType="true" search=".onSearch"/>
             </f:DynamicPageHeader>
         </f:header>
         <f:content>
