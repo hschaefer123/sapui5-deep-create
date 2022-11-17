@@ -7,7 +7,7 @@
       "type": "shell",
       "label": "cds watch",
       "command": "cds",
-      "args": ["watch"],
+      "args": ["watch", "--open", "index.html?sap-ui-xx-viewCache=false"],
       "group": {
         "kind": "build",
         "isDefault": true

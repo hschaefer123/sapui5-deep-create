@@ -14,9 +14,10 @@
         "@sap/ux-specification": "^1.102.12",
         "sqlite3": "^5.1.2"
     },
-    "scripts": {
-        "start": "cds run",
-        "watch-sapui5deepcreate": "cds watch --open sapui5deepcreate/webapp/index.html?sap-ui-xx-viewCache=false"
+    "scripts": {        
+        "watch": "cds watch --open index.html?sap-ui-xx-viewCache=false",
+        "watch-sapui5deepcreate": "cds watch --open sapui5deepcreate/webapp/index.html?sap-ui-xx-viewCache=false",
+        "start": "cds run"
     },
     "engines": {
         "node": "^16.15"
@@ -48,5 +49,12 @@
     },
     "sapux": [
         "app/sapui5deepcreate"
-    ]
+    ],
+    "cds": {
+        "requires": {
+            "db": {
+                "kind": "sql"
+            }
+        }
+    }
 }

@@ -30,7 +30,7 @@ npm i
 
 ## Start application
 
-- Open a new terminal and run `cds watch` 
+- Open a new terminal and run `cds watch --open index.html?sap-ui-xx-viewCache=false` 
 - (in VS Code simply choose _**Terminal** > Run Task > cds watch_) or simply use CTRL + SHIFT + B (WIN)
 - Start adding content, for example, a [db/schema.cds](db/schema.cds).
 
