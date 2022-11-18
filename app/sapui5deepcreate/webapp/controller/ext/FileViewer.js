@@ -1,26 +1,32 @@
 sap.ui.define([
     "sap/ui/core/mvc/ControllerExtension",
     "sap/m/PDFViewer",
+    "sap/m/LightBox",
+    "sap/m/LightBoxItem",
     "sap/ui/Device",
     "sap/m/library"
-], function (ControllerExtension, PDFViewer, Device, library) {
+], function (ControllerExtension, PDFViewer, LightBox, LightBoxItem, Device, library) {
     "use strict";
 
     /**
-     * @class A controller extension offering PDFViewer features as mixin
+     * @class A controller extension offering FileViewer features as mixin
      *
-     * @name udina.sample.sapui5deepcreate.controller.ext.PDFViewer
+     * @name udina.sample.sapui5deepcreate.controller.ext.FileViewer
      * @hideconstructor
      * @public
      * @since 1.2.0
      */
-    return ControllerExtension.extend("udina.sample.sapui5deepcreate.controller.ext.PDFViewer", {
+    return ControllerExtension.extend("udina.sample.sapui5deepcreate.controller.ext.FileViewer", {
 
         _oPDFViewer: undefined,
 
         // this section allows to extend lifecycle hooks or override public methods of the base controller
         override: {
             onExit: function () {
+                if (this._oImageViewer) {
+                    this._oImageViewer.destroy();
+                    this._oImageViewer = null;
+                }
                 if (this._oPDFViewer) {
                     this._oPDFViewer.destroy();
                     this._oPDFViewer = null;
@@ -54,16 +60,48 @@ sap.ui.define([
             oEvent.preventDefault();
         },
 
+        getImageViewer: function () {
+            if (!this._oImageViewer) {
+                this._oImageViewer = new LightBox({
+                    imageContent: new LightBoxItem()
+                });
+                this.base.getView().addDependent(this._oImageViewer);
+            }
+
+            return this._oImageViewer;
+        },
+
+        getPDFViewer: function () {
+            if (!this._oPDFViewer) {
+                this._oPDFViewer = new PDFViewer();
+                this.base.getView().addDependent(this._oPDFViewer);
+            }
+
+            return this._oPDFViewer;
+        },
+
+        getURLHelper: function () {
+            return library.URLHelper;
+        },
+
         openFile: function (sFileName, sUrl, sMediaType) {
             if (sMediaType === "application/pdf") {
                 this._openPdf(sFileName, sUrl);
             } else if (sMediaType.startsWith("image/")) {
-                // TODO: inline image preview using dialog
-                this.getURLHelper().redirect(sUrl, true);
+                this._openImage(sFileName, sUrl);
             } else {
                 // force download
                 this.getURLHelper().redirect(sUrl, true);
             }
+        },
+
+        _openImage: function (sTitle, sUrl) {
+            var oImageViewer = this.getImageViewer(),
+                oLightBoxItem = oImageViewer.getImageContent()[0];
+
+            oLightBoxItem.setTitle(sTitle);
+            oLightBoxItem.setImageSrc(sUrl);
+            oImageViewer.open();
         },
 
         _openPdf: function (sTitle, sUrl) {
@@ -82,19 +120,6 @@ sap.ui.define([
                 // force download
                 this.getURLHelper().redirect(sUrl, true);
             }
-        },
-
-        getPDFViewer: function () {
-            if (!this._oPDFViewer) {
-                this._oPDFViewer = new PDFViewer();
-                this.base.getView().addDependent(this._oPDFViewer);
-            }
-
-            return this._oPDFViewer;
-        },
-
-        getURLHelper: function () {
-            return library.URLHelper;
         }
 
     });

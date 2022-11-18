@@ -4,23 +4,27 @@
 - The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - This project adheres to [Semantic Versioning](http://semver.org/).
 
+## Version 0.1.2 - 2022-11-18
+
+### Added
+- Image attachment now open using the FileViewers LightBox dialog
+
+### Changed
+- controller extension PDFViewer renamed to FileViewer because also supporting images and maybe more to come
+
 ## Version 0.1.2 - 2022-11-17
 
 ### Changed
-
 - ObjectPageLayout hides HeaderContent in edit mode
 - SmartFilterBar uses useDateRangeType="true" for RequestedDeliveryDate
 - ObjectPage to_Item table now uses native delete feature instead action button and focus table afterwards
 
-
 ## Version 0.1.1 - 2022-11-16
 
 ### Fixed
-
 - returning to_Attachment after creation without data
 
 ### Added
-
 - PDFViewer extension used with UploadSet pdf preview
 - sap.ndc.BarcodeScanner to allow adding items by ean-code
 - SalesOrderType to mock service and ValueHelp
@@ -30,7 +34,6 @@
 - ObjectPage item title with count
 
 ### Changed
-
 - centered IllustrationMessage for NotFound and ObjectNotFound view
 - removed SalesOrder from ListReport SelectionFields annotation
 - Added Attachment readonly List because UploadSet does not really support it

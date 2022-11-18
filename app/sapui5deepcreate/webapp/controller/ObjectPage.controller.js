@@ -2,11 +2,11 @@ sap.ui.define([
     "udina/sample/sapui5deepcreate/controller/BaseController",
     "udina/sample/sapui5deepcreate/controller/ext/EditFlow",
     "udina/sample/sapui5deepcreate/controller/ext/MessageHandler",
-    "udina/sample/sapui5deepcreate/controller/ext/PDFViewer",
+    "udina/sample/sapui5deepcreate/controller/ext/FileViewer",
     "sap/ui/model/json/JSONModel",
     "sap/ui/model/BindingMode",
     "sap/ndc/BarcodeScanner"
-], function (BaseController, EditFlow, MessageHandler, PDFViewer, JSONModel, BindingMode, BarcodeScanner) {
+], function (BaseController, EditFlow, MessageHandler, FileViewer, JSONModel, BindingMode, BarcodeScanner) {
     "use strict";
 
     const EditMode = {
@@ -33,7 +33,7 @@ sap.ui.define([
         // add used extensions
         editFlow: EditFlow,
         messageHandler: MessageHandler,
-        pdfViewer: PDFViewer,
+        fileViewer: FileViewer,
 
         onInit: function () {
             var iOriginalBusyDelay;
@@ -48,7 +48,8 @@ sap.ui.define([
                 delay: 0,
                 editMode: EditMode.Display,
                 isEditable: false,
-                itemCount: 0
+                itemCount: 0,
+                attachmentCount: 0
             })
             oUiModel.setDefaultBindingMode(BindingMode.OneWay);
             this.getView().setModel(oUiModel, "ui");
@@ -59,7 +60,24 @@ sap.ui.define([
 
             // use editFlow events
             // this.editFlow.onBeforeSave = this.onEditFlowBeforeSave;
+
+            // handle attachment count
+            this.byId("UploadSet").getList().attachUpdateFinished(this.onAttachmentUpdateFinished, this);
         },
+
+        /*
+        onBeforeRendering: function () {
+            var oUploadSet = this.byId("UploadSet"),
+                oAttachmentBinding = oUploadSet.getBinding("items");
+
+            console.log("oUploadSet", oAttachmentBinding);
+
+            oAttachmentBinding.attachChange(function (oEvent) {
+                var sReason = oEvent.getParameter("reason");
+                console.log("oUploadSet", sReason);
+            });
+        },
+        */
 
         onBarcodeScan: function () {
             var that = this;
@@ -81,6 +99,11 @@ sap.ui.define([
         onItemUpdateFinished: function (oEvent) {
             var iTotal = oEvent.getParameter("total");
             this._oUiModel.setProperty("/itemCount", iTotal);
+        },
+        
+        onAttachmentUpdateFinished: function (oEvent) {
+            var iTotal = oEvent.getParameter("total");
+            this._oUiModel.setProperty("/attachmentCount", iTotal);
         },
 
         /*

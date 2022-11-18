@@ -57,9 +57,9 @@
                 titleUppercase="false" showTitle="false">
                 <uxap:subSections>
 					<uxap:ObjectPageSubSection>
-                        <Table id="itemTable" width="auto" updateFinished=".onItemUpdateFinished"
-                            mode="Delete" delete=".onDeleteItem"
-                            items="{to_Item}">
+                        <Table id="itemTable" width="auto" items="{to_Item}"
+                            mode="Delete" delete=".onDeleteItem"                            
+                            updateFinished=".onItemUpdateFinished">
                             <headerToolbar>
                                 <Toolbar>
                                     <Title text="{i18n>SalesOrderItems} ({ui>/itemCount})"  titleStyle="H4"/>
@@ -157,7 +157,8 @@
                             afterItemRemoved=".editFlow.onUploadItemRemoved">
                             <upload:toolbar>
                                 <OverflowToolbar>
-                                    <Title text="{i18n>Attachments}" titleStyle="H4"/>
+                                    <Title text="{i18n>Attachments} ({ui>/attachmentCount})" 
+                                        titleStyle="H4"/>
                                     <ToolbarSpacer/>
                                     <upload:UploadSetToolbarPlaceholder />
                                 </OverflowToolbar>
@@ -168,19 +169,21 @@
                                     mediaType="{MediaType}"
                                     url="{Url}"
                                     thumbnailUrl="{ThumbnailUrl}"
-                                    openPressed=".pdfViewer.onUploadSetItemOpenPressed">
+                                    openPressed=".fileViewer.onUploadSetItemOpenPressed">
                                 </upload:UploadSetItem>
                             </upload:items>
                         </upload:UploadSet>
-                        <List id="SalesOrderAttachmentList" headerText="{i18n>Attachments}" 
+                        <List id="SalesOrderAttachmentList" 
+                            headerText="{i18n>Attachments} ({ui>/attachmentCount})" 
                             visible="{=!${ui>/isEditable}}" 
-                            items="{path: 'to_Attachment', templateShareable: false}">
+                            items="{path: 'to_Attachment', templateShareable: false}"
+                            updateFinished=".onAttachmentUpdateFinished">
                             <CustomListItem>
                                 <HBox class="sapUiSmallMargin" renderType="Bare" alignItems="Center">
                                     <Avatar src="{ThumbnailUrl}" displayShape="Square" 
                                         imageFitType="Cover"/>
                                     <Link class="sapUiSmallMarginBegin" text="{FileName}" 
-                                        emphasized="true" press=".pdfViewer.onLinkPress"/>
+                                        emphasized="true" press=".fileViewer.onLinkPress"/>
                                 </HBox>		                            
                             </CustomListItem>
                         </List>                        
