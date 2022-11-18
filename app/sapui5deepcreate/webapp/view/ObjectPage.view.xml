@@ -58,7 +58,7 @@
                 <uxap:subSections>
 					<uxap:ObjectPageSubSection>
                         <Table id="itemTable" width="auto" items="{to_Item}"
-                            mode="Delete" delete=".onDeleteItem"                            
+                            mode="{= ${ui>/isEditable} ? 'Delete' : 'None' }" delete=".onDeleteItem"                            
                             updateFinished=".onItemUpdateFinished">
                             <headerToolbar>
                                 <Toolbar>

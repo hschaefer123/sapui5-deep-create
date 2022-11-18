@@ -12,6 +12,9 @@
 ### Changed
 - controller extension PDFViewer renamed to FileViewer because also supporting images and maybe more to come
 
+### Fixed
+- delete mode on items table removed in display mode
+
 ## Version 0.1.2 - 2022-11-17
 
 ### Changed
