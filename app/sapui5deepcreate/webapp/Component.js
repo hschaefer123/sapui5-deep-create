@@ -1,11 +1,29 @@
 sap.ui.define([
     "sap/ui/core/UIComponent",
     "sap/ui/Device",
-    "udina/sample/sapui5deepcreate/model/models",
     "udina/sample/sapui5deepcreate/controller/ErrorHandler",
-    "sap/f/IllustrationPool"
-], function (UIComponent, Device, models, ErrorHandler, IllustrationPool) {
+    "udina/sample/sapui5deepcreate/model/models"
+], function (UIComponent, Device, ErrorHandler, models) {
     "use strict";
+
+    const EditMode = {
+        /**
+         * View is currently displaying only.
+         *
+         * @constant
+         * @type {string}
+         * @public
+         */
+        Display: "Display",
+        /**
+         * View is currently editable.
+         *
+         * @constant
+         * @type {string}
+         * @public
+         */
+        Editable: "Editable"
+    };
 
     return UIComponent.extend("udina.sample.sapui5deepcreate.Component", {
 
@@ -26,10 +44,13 @@ sap.ui.define([
             this._oErrorHandler = new ErrorHandler(this);
 
             // set message model
-			this.setModel(sap.ui.getCore().getMessageManager().getMessageModel(), "message");
+            this.setModel(sap.ui.getCore().getMessageManager().getMessageModel(), "message");
 
             // set the device model
             this.setModel(models.createDeviceModel(), "device");
+
+            // set the ui model (sap.fe compliance)
+            this.setModel(models.createUiModel(EditMode.Display), "ui");
 
             // enable routing
             this.getRouter().initialize();
@@ -43,7 +64,7 @@ sap.ui.define([
          */
         destroy: function () {
             this._oErrorHandler.destroy();
-            
+
             // call the base component's destroy function
             UIComponent.prototype.destroy.apply(this, arguments);
         },
@@ -67,6 +88,12 @@ sap.ui.define([
                 }
             }
             return this._sContentDensityClass;
+        },
+
+        setEditable: function (bEditable) {
+            var oUiModel = this.getModel("ui");
+            oUiModel.setProperty("/editMode", (bEditable) ? EditMode.Editable : EditMode.Display);
+            oUiModel.setProperty("/isEditable", bEditable);
         }
 
     });

@@ -1,208 +1,309 @@
 <mvc:View controllerName="udina.sample.sapui5deepcreate.controller.ObjectPage" displayBlock="true"
-    xmlns:app="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1"
+    xmlns:data="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1"
     xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:l="sap.ui.layout" xmlns:mvc="sap.ui.core.mvc" 
     xmlns:smartForm="sap.ui.comp.smartform" xmlns:smartField="sap.ui.comp.smartfield"
     xmlns:smartTable="sap.ui.comp.smarttable"
     xmlns:upload="sap.m.upload" xmlns:uxap="sap.uxap">
-    <uxap:ObjectPageLayout id="ObjectPageLayout" showTitleInHeaderContent="true"         
-        busy="{ui>/busy}" busyIndicatorDelay="{ui>/delay}"
-        showHeaderContent="{= !${ui>/isEditable}}" upperCaseAnchorBar="false"
-        showFooter="{ui>/isEditable}">
-        <uxap:headerTitle>
-            <uxap:ObjectPageDynamicHeaderTitle id="ObjectPageHeader">
-                <uxap:expandedHeading>
-                    <Title text="{= ${ui>/isEditable} ? ${i18n>SalesOrderCreate} : ${i18n>SalesOrderDisplay}}" 
-                        wrapping="true"/>
-                </uxap:expandedHeading>
-                <uxap:snappedHeading>
-                    <Title text="{= ${ui>/isEditable} ? ${i18n>SalesOrderCreate} : ${i18n>SalesOrderDisplay}}" 
-                        wrapping="true"/>
-                </uxap:snappedHeading>
-            </uxap:ObjectPageDynamicHeaderTitle>
-        </uxap:headerTitle>
-        <uxap:headerContent>
-            <FlexBox wrap="Wrap" visible="{= !${ui>/isEditable}}">
-                <l:VerticalLayout class="sapUiSmallMarginBeginEnd">
-                    <Label text="{i18n>SalesOrder}"/>
-                    <Text text="{SalesOrder}"/>
-                </l:VerticalLayout>
-			</FlexBox>
-        </uxap:headerContent>
-        <uxap:sections>
-            <uxap:ObjectPageSection id="SalesOrderHead" title="{i18n>SalesOrderHead}"
-                titleUppercase="false">
-                <uxap:subSections>
-					<uxap:ObjectPageSubSection>
-                        <smartForm:SmartForm id="SmartForm" editable="{ui>/isEditable}"
-                        	app:defaultCheckBoxDisplayBehaviour="OnOff"
-			                app:defaultDropDownDisplayBehaviour="idAndDescription">
+    <l:DynamicSideContent id="DynamicSideContent"
+        sideContentFallDown="BelowM" sideContentPosition="End"
+        containerQuery="true" showSideContent="false" breakpointChanged=".onSideContentBreakpointChanged">
+        <l:mainContent>
+            <uxap:ObjectPageLayout id="ObjectPageLayout" flexEnabled="true" upperCaseAnchorBar="false"
+                busy="{ui>/busy}" busyIndicatorDelay="0"        
+                showHeaderContent="{= !${ui>/isEditable}}" showFooter="{ui>/isEditable}">
+                <uxap:headerTitle>
+                    <uxap:ObjectPageDynamicHeaderTitle id="ObjectPageHeader" areaShrinkRatio="1:0:1.6">
+                        <uxap:actions>
+                            <Button id="SideContentToggleButton" icon="sap-icon://detail-view" 
+                                visible="false" press=".onSideContentToggle"/>
+                        </uxap:actions>
+                        <uxap:expandedHeading>
+                            <Title text="{= ${ui>/isEditable} ? ${i18n>SalesOrderCreate} : ${i18n>SalesOrderDisplay}}" 
+                                wrapping="true" level="H2"/>
+                        </uxap:expandedHeading>
+                        <uxap:snappedHeading>
+                            <FlexBox renderType="Bare" alignItems="Center">
+                                <Avatar class="sapUiSmallMarginEnd" initials="{SalesOrderType}"
+                                    src="sap-icon://retail-store"
+                                    visible="{= !${ui>/isEditable}}"
+                                    displayShape="Square" displaySize="S"/>
+                                <VBox renderType="Bare">
+                                    <Title class="sapUiTinyMarginBottom"
+                                        text="{= ${ui>/isEditable} ? ${i18n>SalesOrderCreate} : ${i18n>SalesOrderDisplay}}" 
+                                        wrapping="true" level="H2"/>
+                                    <Label text="{i18n>SalesOrderType} ({SalesOrderType})" 
+                                        visible="{= !${ui>/isEditable}}"
+                                        wrapping="true"/>
+                                </VBox>
+                            </FlexBox>
+                        </uxap:snappedHeading>
+                        <uxap:snappedTitleOnMobile>
+                            <Title text="{= ${ui>/isEditable} ? ${i18n>SalesOrderCreate} : ${i18n>SalesOrderDisplay}}" 
+                                wrapping="true" level="H2"/>
+                        </uxap:snappedTitleOnMobile>
+                        <uxap:expandedContent>
+                            <Label text="{i18n>SalesOrderType} ({SalesOrderType})" 
+                                visible="{= !${ui>/isEditable}}"
+                                wrapping="true"/>
+                        </uxap:expandedContent>
+                        <uxap:snappedContent>
+                            <!--<Label text="{i18n>SalesOrderType} ({SalesOrderType})" wrapping="true"/>-->
+                        </uxap:snappedContent>
+                    </uxap:ObjectPageDynamicHeaderTitle>
+                </uxap:headerTitle>
+                <uxap:headerContent>
+                    <FlexBox wrap="Wrap" fitContainer="false" alignItems="Stretch"
+                        visible="{= !${ui>/isEditable}}">
+                        <Avatar class="sapUiSmallMarginEnd sapUiSmallMarginBottom"
+                            src="sap-icon://retail-store"
+                            initials="{SalesOrderType}"
+                            displayShape="Square" displaySize="XL"/>                            
+                        <l:VerticalLayout class="sapUiMediumMarginEnd">
+                            <Title class="sapUiTinyMarginBottom" level="H3">
+                                <Link text="{i18n>Partners}" 
+                                    data:title="{i18n>Partners}"
+                                    data:target="ShipToParty" 
+                                    press=".annotationHelper.onQuickView"/>
+                            </Title>
+                            <ObjectAttribute id="SoldToParty" class="sapUiTinyMarginBottom"
+                                title="{i18n>SoldToParty}" text="UNIORG Cloud Services"
+                                active="true"
+                                data:title="{i18n>SoldToParty}"
+                                data:target="SoldToParty" 
+                                press=".annotationHelper.onQuickView"/>
+                            <ObjectAttribute id="ShipToParty"
+                                title="{i18n>PurchaseOrderByShipToParty}" text="UNIORG Cloud Services" 
+                                active="true"
+                                data:title="{i18n>PurchaseOrderByShipToParty}"
+                                data:target="PurchaseOrderByShipToParty" 
+                                press=".annotationHelper.onQuickView"/>
+                        </l:VerticalLayout>
+                        <l:VerticalLayout class="sapUiMediumMarginEnd">
+                        	<l:layoutData>
+                                <uxap:ObjectPageHeaderLayoutData visibleS="false"/>
+                            </l:layoutData>
+                            <Title class="sapUiTinyMarginBottom" text="{i18n>Status}" level="H3"/>
+                            <ObjectStatus class="sapUiTinyMarginBottom"
+                                title="Overall Status" text="Open" state="Success"/>
+                            <ObjectStatus class="sapUiTinyMarginBottom"
+                                title="Implementation Status" text="Complete" state="Success"/>
+                        </l:VerticalLayout>
+                        <l:VerticalLayout class="sapUiMediumMarginEnd">
+                            <Title class="sapUiTinyMarginBottom" text="{i18n>Status}" level="H3"/>                        
+                            <ObjectStatus class="sapMObjectStatusLarge" text="Delivery" state="Success"/>
+                        </l:VerticalLayout>
+                        <l:VerticalLayout class="sapUiMediumMarginEnd">
+                            <Title class="sapUiTinyMarginBottom" text="{i18n>NetAmount}" level="H3"/>                        
+                            <ObjectNumber class="sapMObjectNumberLarge" number="123.45" unit="EUR"/>
+                        </l:VerticalLayout>
+                        <!-- How to use SmartForm with TwoColumn layout? -->
+                        <!--
+                        <smartForm:SmartForm editable="{ui>/isEditable}">
                             <smartForm:layout>
-				                <smartForm:ColumnLayout columnsM="2" columnsL="3" columnsXL="4"/>
-			                </smartForm:layout>
+                                <smartForm:ColumnLayout columnsM="2"/>
+                            </smartForm:layout>
                             <smartForm:Group>
                                 <smartForm:GroupElement>
-                                    <smartField:SmartField id="CustomerPurchaseOrderDate" 
-                                        value="{CustomerPurchaseOrderDate}"/>
+                                    <smartField:SmartField value="{CustomerPurchaseOrderDate}"/>
                                 </smartForm:GroupElement>
                                 <smartForm:GroupElement>
-                                    <smartField:SmartField id="PurchaseOrderByCustomer"
-                                        value="{PurchaseOrderByCustomer}"/>
+                                    <smartField:SmartField value="{PurchaseOrderByCustomer}"/>
                                 </smartForm:GroupElement>                                
                             </smartForm:Group>
                         </smartForm:SmartForm>
-                    </uxap:ObjectPageSubSection>
-                </uxap:subSections>
-            </uxap:ObjectPageSection>
-            <uxap:ObjectPageSection id="SalesOrderItems" title="{i18n>SalesOrderItems}" 
-                titleUppercase="false" showTitle="false">
-                <uxap:subSections>
-					<uxap:ObjectPageSubSection>
-                        <Table id="itemTable" width="auto" items="{to_Item}"
-                            mode="{= ${ui>/isEditable} ? 'Delete' : 'None' }" delete=".onDeleteItem"                            
-                            updateFinished=".onItemUpdateFinished">
-                            <headerToolbar>
-                                <Toolbar>
-                                    <Title text="{i18n>SalesOrderItems} ({ui>/itemCount})"  titleStyle="H4"/>
-                                    <ToolbarSpacer/>
-                                    <Button text="{i18n>Add}" visible="{ui>/isEditable}" 
-                                        press=".onAddItem"/>
-                                    <Button text="{i18n>ScanBarcode}" visible="{ui>/isEditable}"
-                                        press=".onBarcodeScan"/>
-                                </Toolbar>
-                            </headerToolbar>
-                            <columns>
-                                <Column width="12em">
-                                    <Label text="Quantity" wrapping="true"/>
-                                </Column>
-                                <Column width="6em">
-                                    <Label text="Unit" wrapping="true"/>
-                                </Column>
-                                <Column>
-                                    <Label text="Material"/>
-                                </Column>
-                            </columns>
-                            <items>
-                                <ColumnListItem>
-                                    <cells>
-                                        <!-- use valuePrecision to allow floats -->
-                                        <StepInput value="{RequestedQuantity}" min="1"
-                                            editable="{ui>/isEditable}"/>
-                                        <smartField:SmartField value="{RequestedQuantityUnit}" 
-                                            editable="{ui>/isEditable}"/>
-                                        <smartField:SmartField value="{Material}"
-                                            editable="{ui>/isEditable}"/>
-                                    </cells>
-                                </ColumnListItem>
-                            </items>
-                        </Table>
-                        <!-- Too many issues with SmartTable like editable only works onetime, eutoBinding not working -> rebindTable 
-                        <smartTable:SmartTable id="smartTableItems" showRowCount="true" 
-                            header="{i18n>SalesOrderItems}" tableType="ResponsiveTable"
-                            editable="{ui>/isEditable}"
-                            entitySet="SalesOrderItem" tableBindingPath="to_Item" enableAutoBinding="true" 
-                            enableAutoColumnWidth="true"                                            
-                            initiallyVisibleFields="RequestedQuantity,RequestedQuantityUnit,Material"
-                            initialise=".onSmartTableInitialize">
-                            <smartTable:layoutData>
-                                <FlexItemData growFactor="1" baseSize="0%"/>
-                            </smartTable:layoutData>
-                            <smartTable:customToolbar>
-                                <OverflowToolbar>
-                                    <ToolbarSpacer/>
-                                    <Button text="Add" visible="{ui>/isEditable}" press=".onAddItem"/>
-                                    <ToolbarSeparator/>
-                                </OverflowToolbar>                    
-                            </smartTable:customToolbar>
-                            <Table id="itemTable">
-                                <columns>
-                                    <Column width="12em">
-                                        <customData>
-                                            <core:CustomData key="p13nData"
-                                                value='\{"columnKey": "RequestedQuantity", "columnIndex": 0}' />
-                                        </customData>
-                                        <Text text="{/SalesOrderItem/RequestedQuantity/#@sap:label}"/>
-                                    </Column>
-                                </columns>
-                                <items>
-                                    <ColumnListItem>
-                                        <cells>
-                                            <StepInput value="{RequestedQuantity}" editable="{ui>/isEditable}"/>
-                                        </cells>
-                                    </ColumnListItem>
-                                </items>
-                            </Table>                    
-                        </smartTable:SmartTable>
                         -->
-                    </uxap:ObjectPageSubSection>
-                </uxap:subSections>
-            </uxap:ObjectPageSection>
-            <uxap:ObjectPageSection id="SalesOrderAttachments" title="{i18n>SalesOrderAttachments}" 
-                titleUppercase="false" showTitle="false">
-                <uxap:subSections>
-					<uxap:ObjectPageSubSection>                    
-                        <upload:UploadSet
-                            id="UploadSet"
-                            visible="{ui>/isEditable}" 
-                            instantUpload="true"
-                            uploadButtonInvisible="{= !${ui>/isEditable}}"
-                            uploadEnabled="{ui>/isEditable}"                            
-                            terminationEnabled="true"
-                            fileTypes="txt,doc,png,pdf"
-                            maxFileNameLength="30"
-                            maxFileSize="5000"
-                            mediaTypes="text/plain,application/msword,application/pdf,image/svg+xml,image/jpeg,image/png"
-                            items="{path: 'to_Attachment', templateShareable: false}"
-                            mode="None"
-                            uploadCompleted=".editFlow.onUploadCompleted"
-                            afterItemRemoved=".editFlow.onUploadItemRemoved">
-                            <upload:toolbar>
-                                <OverflowToolbar>
-                                    <Title text="{i18n>Attachments} ({ui>/attachmentCount})" 
-                                        titleStyle="H4"/>
-                                    <ToolbarSpacer/>
-                                    <upload:UploadSetToolbarPlaceholder />
-                                </OverflowToolbar>
-                            </upload:toolbar>
-                            <upload:items>
-                                <upload:UploadSetItem
-                                    fileName="{FileName}"
-                                    mediaType="{MediaType}"
-                                    url="{Url}"
-                                    thumbnailUrl="{ThumbnailUrl}"
-                                    openPressed=".fileViewer.onUploadSetItemOpenPressed">
-                                </upload:UploadSetItem>
-                            </upload:items>
-                        </upload:UploadSet>
-                        <List id="SalesOrderAttachmentList" 
-                            headerText="{i18n>Attachments} ({ui>/attachmentCount})" 
-                            visible="{=!${ui>/isEditable}}" 
-                            items="{path: 'to_Attachment', templateShareable: false}"
-                            updateFinished=".onAttachmentUpdateFinished">
-                            <CustomListItem>
-                                <HBox class="sapUiSmallMargin" renderType="Bare" alignItems="Center">
-                                    <Avatar src="{ThumbnailUrl}" displayShape="Square" 
-                                        imageFitType="Cover"/>
-                                    <Link class="sapUiSmallMarginBegin" text="{FileName}" 
-                                        emphasized="true" press=".fileViewer.onLinkPress"/>
-                                </HBox>		                            
-                            </CustomListItem>
-                        </List>                        
-                    </uxap:ObjectPageSubSection>
-                </uxap:subSections>                
-            </uxap:ObjectPageSection>
-        </uxap:sections>
-        <uxap:footer>
-            <OverflowToolbar>
-                <Button icon="sap-icon://alert" text="{= ${message>/}.length }" type="Emphasized"
-                    visible="{=${message>/}.length > 0}" busyIndicatorDelay="0" 
-                    press=".messageHandler.onMessagePopoverPress"/>
-                <ToolbarSpacer/>
-                <ToolbarSpacer/>
-                <Button text="{i18n>Save}" type="Emphasized" busyIndicatorDelay="0" 
-                    press=".editFlow.onSave"/>
-                <Button text="{i18n>SavePreProcessed}" press=".editFlow.onSavePreProcessed"/>
-                <Button text="{i18n>Cancel}" press=".editFlow.onCancel"/>
-            </OverflowToolbar>
-        </uxap:footer>
-    </uxap:ObjectPageLayout>
+                    </FlexBox>
+                </uxap:headerContent>
+                <uxap:sections>
+                    <uxap:ObjectPageSection id="SalesOrderHead" title="{i18n>GeneralInformation}"
+                        titleUppercase="false">
+                        <uxap:subSections>
+                            <uxap:ObjectPageSubSection>
+                                <smartForm:SmartForm id="SmartForm" editable="{ui>/isEditable}"
+                                    data:defaultCheckBoxDisplayBehaviour="OnOff"
+                                    data:defaultDropDownDisplayBehaviour="idAndDescription">
+                                    <smartForm:layout>
+                                        <smartForm:ColumnLayout columnsM="2" columnsL="3" columnsXL="4"/>
+                                    </smartForm:layout>
+                                    <smartForm:Group>
+                                        <smartForm:GroupElement>
+                                            <smartField:SmartField id="CustomerPurchaseOrderDate" 
+                                                value="{CustomerPurchaseOrderDate}"/>
+                                        </smartForm:GroupElement>
+                                        <smartForm:GroupElement>
+                                            <smartField:SmartField id="PurchaseOrderByCustomer"
+                                                value="{PurchaseOrderByCustomer}"/>
+                                        </smartForm:GroupElement>                                
+                                    </smartForm:Group>
+                                </smartForm:SmartForm>
+                            </uxap:ObjectPageSubSection>
+                        </uxap:subSections>
+                    </uxap:ObjectPageSection>
+                    <uxap:ObjectPageSection id="SalesOrderItems" title="{i18n>Items}" 
+                        titleUppercase="false" showTitle="false">
+                        <uxap:subSections>
+                            <uxap:ObjectPageSubSection>
+                                <Table id="itemTable" width="auto" items="{to_Item}"
+                                    mode="{= ${ui>/isEditable} ? 'Delete' : 'None' }" delete=".onDeleteItem"                            
+                                    updateFinished=".onItemUpdateFinished">
+                                    <headerToolbar>
+                                        <Toolbar>
+                                            <Title text="{i18n>Items} ({view>/itemCount})"  titleStyle="H4"/>
+                                            <ToolbarSpacer/>
+                                            <Button text="{i18n>Add}" visible="{ui>/isEditable}" 
+                                                press=".onAddItem"/>
+                                            <Button text="{i18n>ScanBarcode}" visible="{ui>/isEditable}"
+                                                press=".onBarcodeScan"/>
+                                        </Toolbar>
+                                    </headerToolbar>
+                                    <columns>
+                                        <Column width="12em" hAlign="End">
+                                            <!-- text="{/SalesOrderItem/RequestedQuantity/#@sap:label}" -->
+                                            <Label text="{i18n>RequestedQuantity}"/>
+                                        </Column>
+                                        <Column width="6em">
+                                            <Label text="{i18n>RequestedQuantityUnit}"/>
+                                        </Column>
+                                        <Column>
+                                            <Label text="{i18n>Material}"/>
+                                        </Column>
+                                    </columns>
+                                    <items>
+                                        <ColumnListItem>
+                                            <cells>
+                                                <!-- use valuePrecision to allow floats -->
+                                                <StepInput class="ucUiNoReadonlyDash" 
+                                                    value="{RequestedQuantity}" 
+                                                    min="1" editable="{ui>/isEditable}"/>
+                                                <smartField:SmartField value="{RequestedQuantityUnit}" 
+                                                    editable="{ui>/isEditable}"/>
+                                                <smartField:SmartField value="{Material}"
+                                                    editable="{ui>/isEditable}"/>
+                                            </cells>
+                                        </ColumnListItem>
+                                    </items>
+                                </Table>
+                                <!-- Too many issues with SmartTable like editable only works onetime, eutoBinding not working -> rebindTable 
+                                <smartTable:SmartTable id="smartTableItems" showRowCount="true" 
+                                    header="{i18n>Items}" tableType="ResponsiveTable"
+                                    editable="{ui>/isEditable}"
+                                    entitySet="SalesOrderItem" tableBindingPath="to_Item" enableAutoBinding="true" 
+                                    enableAutoColumnWidth="true"                                            
+                                    initiallyVisibleFields="RequestedQuantity,RequestedQuantityUnit,Material"
+                                    initialise=".onSmartTableInitialize">
+                                    <smartTable:layoutData>
+                                        <FlexItemData growFactor="1" baseSize="0%"/>
+                                    </smartTable:layoutData>
+                                    <smartTable:customToolbar>
+                                        <OverflowToolbar>
+                                            <ToolbarSpacer/>
+                                            <Button text="Add" visible="{ui>/isEditable}" press=".onAddItem"/>
+                                            <ToolbarSeparator/>
+                                        </OverflowToolbar>                    
+                                    </smartTable:customToolbar>
+                                    <Table id="itemTable">
+                                        <columns>
+                                            <Column width="12em">
+                                                <customData>
+                                                    <core:CustomData key="p13nData"
+                                                        value='\{"columnKey": "RequestedQuantity", "columnIndex": 0}' />
+                                                </customData>
+                                                <Text text="{/SalesOrderItem/RequestedQuantity/#@sap:label}"/>
+                                            </Column>
+                                        </columns>
+                                        <items>
+                                            <ColumnListItem>
+                                                <cells>
+                                                    <StepInput value="{RequestedQuantity}" editable="{ui>/isEditable}"/>
+                                                </cells>
+                                            </ColumnListItem>
+                                        </items>
+                                    </Table>                    
+                                </smartTable:SmartTable>
+                                -->
+                            </uxap:ObjectPageSubSection>
+                        </uxap:subSections>
+                    </uxap:ObjectPageSection>
+                    <uxap:ObjectPageSection id="SalesOrderAttachments" title="{i18n>Attachments}" 
+                        titleUppercase="false" showTitle="false">
+                        <uxap:subSections>
+                            <uxap:ObjectPageSubSection>                    
+                                <upload:UploadSet
+                                    id="UploadSet"
+                                    visible="{ui>/isEditable}" 
+                                    instantUpload="true"
+                                    uploadButtonInvisible="{= !${ui>/isEditable}}"
+                                    uploadEnabled="{ui>/isEditable}"                            
+                                    terminationEnabled="true"
+                                    fileTypes="txt,doc,png,pdf"
+                                    maxFileNameLength="30"
+                                    maxFileSize="5000"
+                                    mediaTypes="text/plain,application/msword,application/pdf,image/svg+xml,image/jpeg,image/png"
+                                    items="{path: 'to_Attachment', templateShareable: false}"
+                                    mode="None"
+                                    uploadCompleted=".editFlow.onUploadCompleted"
+                                    afterItemRemoved=".editFlow.onUploadItemRemoved">
+                                    <upload:toolbar>
+                                        <OverflowToolbar>
+                                            <Title text="{i18n>Attachments} ({view>/attachmentCount})" 
+                                                titleStyle="H4"/>
+                                            <ToolbarSpacer/>
+                                            <upload:UploadSetToolbarPlaceholder />
+                                        </OverflowToolbar>
+                                    </upload:toolbar>
+                                    <upload:items>
+                                        <upload:UploadSetItem
+                                            fileName="{FileName}"
+                                            mediaType="{MediaType}"
+                                            url="{Url}"
+                                            thumbnailUrl="{ThumbnailUrl}"
+                                            openPressed=".fileViewer.onUploadSetItemOpenPressed">
+                                        </upload:UploadSetItem>
+                                    </upload:items>
+                                </upload:UploadSet>
+                                <List id="SalesOrderAttachmentList" 
+                                    headerText="{i18n>Attachments} ({view>/attachmentCount})" 
+                                    visible="{=!${ui>/isEditable}}" 
+                                    items="{path: 'to_Attachment', templateShareable: false}"
+                                    updateFinished=".onAttachmentUpdateFinished">
+                                    <CustomListItem>
+                                        <HBox class="sapUiSmallMargin" renderType="Bare" alignItems="Center">
+                                            <Avatar src="{ThumbnailUrl}" displayShape="Square"
+                                                badgeIcon="sap-icon://zoom-in"
+                                                fallbackIcon="{ path: 'FileName', formatter: '.formatter.fileNameIcon' }"
+                                                press=".fileViewer.onAvatarPress"/>
+                                            <Link class="sapUiSmallMarginBegin" text="{FileName}"
+                                                emphasized="true" press=".onFileOpenBySide"/>
+                                        </HBox>		                            
+                                    </CustomListItem>
+                                </List>                        
+                            </uxap:ObjectPageSubSection>
+                        </uxap:subSections>                
+                    </uxap:ObjectPageSection>
+                </uxap:sections>
+                <uxap:footer>
+                    <OverflowToolbar>
+                        <Button icon="sap-icon://alert" text="{= ${message>/}.length }" type="Emphasized"
+                            visible="{=${message>/}.length > 0}" busyIndicatorDelay="0" 
+                            press=".messageHandler.onMessagePopoverPress"/>
+                        <ToolbarSpacer/>
+                        <ToolbarSpacer/>
+                        <Button text="{i18n>Create}" type="Emphasized" busyIndicatorDelay="0" 
+                            press=".editFlow.onSave"/>
+                        <Button text="{i18n>SavePreProcessed}" press=".editFlow.onSavePreProcessed"/>
+                        <Button text="{i18n>Cancel}" press=".editFlow.onCancel"/>
+                    </OverflowToolbar>
+                </uxap:footer>
+            </uxap:ObjectPageLayout>
+        </l:mainContent>
+		<l:sideContent>
+            <Page title="{view>/pdfTitle}" enableScrolling="false">
+                <headerContent>
+                    <Button id="SideContentCloseButton" text="{i18n>Close}" 
+                        press=".onSideContentClose"/>
+                </headerContent>
+                <PDFViewer id="PDFViewer" source="{view>/pdfSource}" showDownloadButton="false"/>
+            </Page>
+		</l:sideContent>
+	</l:DynamicSideContent>
 </mvc:View>

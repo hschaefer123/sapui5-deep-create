@@ -44,6 +44,14 @@ It should also just be an example, if you have to use an unmanaged ABAP implemen
 ## Default data
 See the initial [Mock Data](http://localhost:4004/v2/mock/SalesOrder?$select=SalesOrder,SalesOrderType,SalesOrganization,DistributionChannel,OrganizationDivision&$expand=to_Item) for SalesOrder expanded with to_Item 
 
+## Design decisions
+The app tries to follow the [SAP Fiori Design Guideline](https://experience.sap.com/fiori-design-web/) as muchg as possible while trying to mimic some of the SAP Fiori Elements v4 implementation paradigmen, to be somehow compatible in between.
+
+### Message Page
+The current sap.m.MessagePage will become deprecated in the future, because it does not fullfill the [SAP Fiori Evolution for Horizon](https://experience.sap.com/fiori-design-web/sap-fiori/#sap-fiori-with-horizon) UX.
+
+Therefore the NotFound and ObjectNotFound view implements the [Illustrated Message](https://experience.sap.com/fiori-design-web/illustrated-message/) design pattern.
+
 ## Issues
 
 ### Using Deep Create with expanded columns in List Report
@@ -78,6 +86,3 @@ This is manually fixed inside **API_SALES_ORDER_SRV.csn** after creation using t
     ]
 },
 ```
-
-### async issue ObjectPage sometime showing
-Sometime initial call shows ObjectNotFoundPage

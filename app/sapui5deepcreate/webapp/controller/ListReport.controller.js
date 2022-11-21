@@ -1,15 +1,12 @@
 sap.ui.define([
-    "udina/sample/sapui5deepcreate/controller/BaseController",
-    "udina/sample/sapui5deepcreate/model/formatter",
+    "udina/sample/sapui5deepcreate/controller/PageController",
     "sap/ui/generic/app/navigation/service/NavigationHandler",
     "sap/ui/generic/app/navigation/service/NavType",
     "sap/ui/model/Sorter"
-], function (BaseController, formatter, NavigationHandler, NavType, Sorter) {
+], function (PageController, NavigationHandler, NavType, Sorter) {
     "use strict";
 
-    return BaseController.extend("udina.sample.sapui5deepcreate.controller.ListReport", {
-
-        formatter: formatter,
+    return PageController.extend("udina.sample.sapui5deepcreate.controller.ListReport", {
 
         onInit: function () {
             // shortcut
@@ -58,7 +55,9 @@ sap.ui.define([
         },
 
         onAdd: function () {
-            this.getAppComponent().getRouter().navTo("object");
+            this.getRouter().navTo("object", {
+                objectId: "..." // -> key placeholder from sap.fe
+            });
         },
 
         onRefresh: function () {
@@ -143,25 +142,6 @@ sap.ui.define([
             this.getRouter().navTo("object", {
                 objectId: oItem.getBindingContext().getProperty("SalesOrder")
             });
-        },
-
-        formatInfo: function (aItems) {
-            var aList = [],
-                oModel = this.getView().getModel();
-
-            if (aItems && aItems.length > 0) {
-                aItems.forEach(function (oItem) {
-                    var sContextPath = "/" + oItem;
-
-                    var sInfo = oModel.getProperty(sContextPath + "/RequestedQuantity");
-                    sInfo += " x ";
-                    sInfo += oModel.getProperty(sContextPath + "/Material");
-
-                    aList.push(sInfo);
-                })
-            }
-
-            return aList.join(", ");
         }
 
     });

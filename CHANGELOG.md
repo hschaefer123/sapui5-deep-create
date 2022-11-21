@@ -4,6 +4,30 @@
 - The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - This project adheres to [Semantic Versioning](http://semver.org/).
 
+## Version 0.1.3 - 2022-11-18
+
+### Added
+- PageController to decouple pageReady and future placeholder loading
+- formatter added to OP controller
+- fileNameIcon formatter used in to_Attachment list
+- sap.fe.placeholder library for placeholder loading of LR and OP
+- manifest placeholder loading added to list and object target
+- controller extension AnnotationHelper for future use
+
+### Changed
+- using SAPUI5 1.108.1 till CDN default is 1.108
+- moved LR formatter to model/formatter
+- moved ui model instantiation to component for compliancy (see sap.fe.core.AppComponent)
+- LR extends PageController
+- OP extends PageController
+- press avatar icon to preview attachment (annotated with zoom icon)
+- removed vertically center from NotFound and ObjectNotFound
+- use new object pattern: "object({objectId}):?query:" and use "..." for create
+
+### Fixed
+- ean128.png thumbnail url
+- remove readonly stepinput dashline with custom css style
+
 ## Version 0.1.2 - 2022-11-18
 
 ### Added

@@ -1,39 +1,21 @@
 sap.ui.define([
-    "udina/sample/sapui5deepcreate/controller/BaseController",
+    "udina/sample/sapui5deepcreate/controller/PageController",
     "udina/sample/sapui5deepcreate/controller/ext/EditFlow",
     "udina/sample/sapui5deepcreate/controller/ext/MessageHandler",
     "udina/sample/sapui5deepcreate/controller/ext/FileViewer",
+    "udina/sample/sapui5deepcreate/controller/ext/AnnotationHelper",
     "sap/ui/model/json/JSONModel",
-    "sap/ui/model/BindingMode",
     "sap/ndc/BarcodeScanner"
-], function (BaseController, EditFlow, MessageHandler, FileViewer, JSONModel, BindingMode, BarcodeScanner) {
+], function (PageController, EditFlow, MessageHandler, FileViewer, AnnotationHelper, JSONModel, BarcodeScanner) {
     "use strict";
 
-    const EditMode = {
-        /**
-         * View is currently displaying only.
-         *
-         * @constant
-         * @type {string}
-         * @public
-         */
-        Display: "Display",
-        /**
-         * View is currently editable.
-         *
-         * @constant
-         * @type {string}
-         * @public
-         */
-        Editable: "Editable"
-    };
-
-    return BaseController.extend("udina.sample.sapui5deepcreate.controller.ObjectPage", {
+    return PageController.extend("udina.sample.sapui5deepcreate.controller.ObjectPage", {
 
         // add used extensions
         editFlow: EditFlow,
         messageHandler: MessageHandler,
         fileViewer: FileViewer,
+        annotationHelper: AnnotationHelper,
 
         onInit: function () {
             var iOriginalBusyDelay;
@@ -41,19 +23,18 @@ sap.ui.define([
             // Store original busy indicator delay, so it can be restored later on
             iOriginalBusyDelay = this.getView().getBusyIndicatorDelay();
 
-            // this is only for SAP FE compliance reason.
-            // do not use the "ui" model in custom code to avoid namespace issues!
-            var oUiModel = new JSONModel({
-                busy: true,
-                delay: 0,
-                editMode: EditMode.Display,
-                isEditable: false,
+            // local view model
+            var oViewModel = new JSONModel({
                 itemCount: 0,
-                attachmentCount: 0
+                attachmentCount: 0,
+                pdfSource: "",
+                pdfTitle: "",
             })
-            oUiModel.setDefaultBindingMode(BindingMode.OneWay);
-            this.getView().setModel(oUiModel, "ui");
-            this._oUiModel = oUiModel;
+            this.getView().setModel(oViewModel, "view");
+            this._oViewModel = oViewModel;
+
+            // site view
+            this._oDynamicSideView = this.byId("DynamicSideContent");
 
             // handle current route
             this.getRouter().getRoute("object").attachPatternMatched(this._onObjectMatched, this);
@@ -61,23 +42,41 @@ sap.ui.define([
             // use editFlow events
             // this.editFlow.onBeforeSave = this.onEditFlowBeforeSave;
 
+            // attach fileViewer event
+            /*
+            this.fileViewer.onBeforeOpenFile = function(mFile) {
+                if (mFile.MediaType === "application/pdf") {
+                    oViewModel.setProperty("/pdfSource", mFile.Url);
+                    oViewModel.setProperty("/pdfTitle", mFile.FileName);
+                }
+                return Promise.resolve();
+            }
+            */
+
             // handle attachment count
             this.byId("UploadSet").getList().attachUpdateFinished(this.onAttachmentUpdateFinished, this);
         },
 
-        /*
-        onBeforeRendering: function () {
-            var oUploadSet = this.byId("UploadSet"),
-                oAttachmentBinding = oUploadSet.getBinding("items");
+        onAfterRendering: function () {
+            this._sCurrentBreakpoint = this._oDynamicSideView.getCurrentBreakpoint();
 
-            console.log("oUploadSet", oAttachmentBinding);
-
-            oAttachmentBinding.attachChange(function (oEvent) {
-                var sReason = oEvent.getParameter("reason");
-                console.log("oUploadSet", sReason);
-            });
+            this.byId("SoldToParty").$().attr("aria-haspopup", true);
+            this.byId("ShipToParty").$().attr("aria-haspopup", true);
         },
-        */
+
+        onFileOpenBySide: function (oEvent) {
+            var oSource = oEvent.getSource(),
+                oContext = oSource.getBindingContext();
+
+            if (oContext.getProperty("MediaType") === "application/pdf") {
+                this._oDynamicSideView.setShowSideContent(true);
+                this._oViewModel.setProperty("/pdfSource", oContext.getProperty("Url"));
+                this._oViewModel.setProperty("/pdfTitle", oContext.getProperty("FileName"));
+
+            } else {
+                this.fileViewer.onAvatarPress.apply(this, arguments);
+            }
+        },
 
         onBarcodeScan: function () {
             var that = this;
@@ -98,12 +97,12 @@ sap.ui.define([
 
         onItemUpdateFinished: function (oEvent) {
             var iTotal = oEvent.getParameter("total");
-            this._oUiModel.setProperty("/itemCount", iTotal);
+            this._oViewModel.setProperty("/itemCount", iTotal);
         },
-        
+
         onAttachmentUpdateFinished: function (oEvent) {
             var iTotal = oEvent.getParameter("total");
-            this._oUiModel.setProperty("/attachmentCount", iTotal);
+            this._oViewModel.setProperty("/attachmentCount", iTotal);
         },
 
         /*
@@ -133,35 +132,62 @@ sap.ui.define([
             oContext.delete();
         },
 
-        onDeleteItemOld: function (oEvent) {
-            var oItem = oEvent.getSource(),
-                oContext = oItem.getBindingContext();
+        onSideContentToggle: function (oEvent) {
+            if (this._sCurrentBreakpoint === "S") {
+                this._oDynamicSideView.toggle();
+            } else {
+                this._oDynamicSideView.setShowSideContent(true);
+            }
 
-            oContext.delete();
+            this.byId("SideContentToggleButton").setVisible(false);
+            this.byId("SideContentCloseButton").focus();
         },
 
-        setEditable: function (bEditable) {
-            var oUiModel = this.getView().getModel("ui");
-            oUiModel.setProperty("/editMode", (bEditable) ? EditMode.Editable : EditMode.Display);
-            oUiModel.setProperty("/isEditable", bEditable);
+        onSideContentClose: function () {
+            if (this._sCurrentBreakpoint === "S") {
+                this._oDynamicSideView.toggle();
+            } else {
+                this._oDynamicSideView.setShowSideContent(false);
+            }
+
+            /*
+            var oButton = this.byId("SideContentToggleButton");
+            oButton.setVisible(true);
+            setTimeout(function () {
+                oButton.focus();
+            }.bind(this));
+            */
+        },
+
+        onSideContentBreakpointChanged: function (oEvent) {
+            return;
+            this._sCurrentBreakpoint = oEvent.getParameter("currentBreakpoint");
+
+            var oButton = this.byId("SideContentToggleButton");
+            if (this._sCurrentBreakpoint === "S" || !this._oDynamicSideView.isSideContentVisible()) {
+                oButton.setVisible(true);
+            } else {
+                oButton.setVisible(false);
+            }
         },
 
         _onObjectMatched: function (oEvent) {
             var sKey = oEvent.getParameter("arguments").objectId,
                 sObjectPath;
 
-            if (sKey) {
+            if (sKey === "...") {
+                // create (edit mode)
+                //this.getView().attachEventOnce("afterRendering", function() {}, this);
+
+                sObjectPath = sKey;
+
+                // focus first editable field
+                this.byId("SmartForm").setFocusOnEditableControl();
+            } else {
                 // display mode
                 sObjectPath = "/" + this.getModel().createKey("SalesOrder", {
                     SalesOrder: sKey
                 });
-            } else {
-                // edit mode
-                //this.getView().attachEventOnce("afterRendering", function() {                
-                //}, this);
-
-                // focus first editable field
-                this.byId("SmartForm").setFocusOnEditableControl();
             }
 
             this._bindView(sObjectPath);
@@ -179,13 +205,16 @@ sap.ui.define([
             var oView = this.getView(),
                 oViewModel = oView.getModel("ui"),
                 oDataModel = this.getModel(),
-                bEditable = sPath === undefined;
+                bEditable = sPath === "...";
 
             // remove former binding
             oView.unbindElement();
 
             // EDIT/DISPLAY MODE
-            this.setEditable(bEditable);
+            this.getAppComponent().setEditable(bEditable);
+
+            // hide side content
+            this._oDynamicSideView.setShowSideContent(false);
 
             if (bEditable) {
                 // create transient context for root entity (sales order)

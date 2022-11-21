@@ -1,5 +1,5 @@
 {
-    "_version": "1.40.0",
+    "_version": " 1.49.0",
     "sap.app": {
         "id": "udina.sample.sapui5deepcreate",
         "type": "application",
@@ -13,7 +13,7 @@
             "fallbackLocale": ""
         },
         "applicationVersion": {
-            "version": "0.1.2"
+            "version": "0.1.3"
         },
         "title": "{{appTitle}}",
         "description": "{{appDescription}}",
@@ -29,6 +29,7 @@
                 }
             }
         },
+        "offline": false,
         "crossNavigation": {
             "inbounds": {
                 "fe-inbound": {
@@ -65,6 +66,14 @@
     "sap.ui5": {
         "flexEnabled": true,
         "handleValidation": true,
+        "resources": {
+            "js": [],
+            "css": [
+                {
+                    "uri": "css/style.css"
+                }
+            ]
+        },
         "dependencies": {
             "minUI5Version": "1.108.0",
             "libs": {
@@ -73,7 +82,8 @@
                 "sap.ui.layout": {},
                 "sap.f": {},
                 "sap.ui.comp": {},
-                "sap.uxap": {}
+                "sap.uxap": {},
+                "sap.fe.placeholder": {}
             }
         },
         "config": {
@@ -106,13 +116,6 @@
                 }
             }
         },
-        "resources": {
-            "css": [
-                {
-                    "uri": "css/style.css"
-                }
-            ]
-        },
         "routing": {
             "config": {
                 "routerClass": "sap.m.routing.Router",
@@ -133,7 +136,7 @@
                     "target": "list"
                 },
                 {
-                    "pattern": "object/:objectId::?query:",
+                    "pattern": "object({objectId}):?query:",
                     "name": "object",
                     "target": "object"
                 }
@@ -144,13 +147,21 @@
                     "viewId": "list",
                     "viewName": "ListReport",
                     "title": "{{SalesOrders}}",
-                    "viewLevel": 1
+                    "viewLevel": 1,
+                    "placeholder": {
+						"html": "sap/fe/placeholder/view/PlaceholderLR.fragment.html",
+						"autoClose": true
+					}
                 },
                 "object": {
                     "viewId": "object",
                     "viewName": "ObjectPage",
                     "title": "{{SalesOrder}}",
-                    "viewLevel": 2
+                    "viewLevel": 2,
+                    "placeholder": {
+						"html": "sap/fe/placeholder/view/PlaceholderOP.fragment.html",
+						"autoClose": true
+					}
                 },
                 "objectNotFound": {
                     "viewName": "ObjectNotFound",

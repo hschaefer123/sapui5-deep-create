@@ -22,7 +22,8 @@
             </f:DynamicPageHeader>
         </f:header>
         <f:content>
-            <smartTable:SmartTable id="smartTable" header="{i18n>SalesOrders}" tableType="ResponsiveTable"
+            <smartTable:SmartTable id="smartTable" header="{i18n>SalesOrders}" 
+                tableType="ResponsiveTable" 
                 smartVariant="__SVM01" 
                 persistencyKey="udina.sample.sapui5deepcreate.view.ListReport.SmartTable"
 				entitySet="SalesOrder" enableAutoBinding="true" enableAutoColumnWidth="true"                
@@ -48,13 +49,13 @@
                                 <core:CustomData key="p13nData"
                                     value='\{"columnKey": "ItemInfo", "columnIndex": 9, "XnavigationProperty": "to_Item", "additionalProperty": "to_Item/RequestedQuantity,to_Item/Material"}' />
                             </customData>
-                            <Text text="{i18n>SalesOrderItems}" />
+                            <Text text="{i18n>Items}" />
                         </Column>
                     </columns>
                     <items>
                         <ColumnListItem type="Active">
                             <cells>
-                                <Text text="{ path: 'to_Item', formatter: '.formatInfo' }" />
+                                <Text text="{ path: 'to_Item', formatter: '.formatter.itemInfo' }" />
                             </cells>
                         </ColumnListItem>
                     </items>

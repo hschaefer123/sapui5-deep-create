@@ -34,7 +34,12 @@ sap.ui.define([
             }
         },
 
-        onLinkPress: function (oEvent) {
+        onBeforeOpenFile: function () {
+            // to be overwritten like -> return Promise.reject("Canceld by user");
+            return Promise.resolve();
+        },
+
+        onAvatarPress: function (oEvent) {
             var oSource = oEvent.getSource(),
                 oContext = oSource.getBindingContext();
 
@@ -84,7 +89,13 @@ sap.ui.define([
             return library.URLHelper;
         },
 
-        openFile: function (sFileName, sUrl, sMediaType) {
+        openFile: async function (sFileName, sUrl, sMediaType) {
+            await this.base.fileViewer.onBeforeOpenFile({ 
+                FileName: sFileName, 
+                Url: sUrl, 
+                MediaType: sMediaType
+            });
+
             if (sMediaType === "application/pdf") {
                 this._openPdf(sFileName, sUrl);
             } else if (sMediaType.startsWith("image/")) {

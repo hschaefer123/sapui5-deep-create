@@ -1,11 +1,9 @@
 <mvc:View controllerName="udina.sample.sapui5deepcreate.controller.NotFound" 
     xmlns="sap.m" xmlns:mvc="sap.ui.core.mvc">    
-    <VBox renderType="Bare" justifyContent="Center" fitContainer="true">
-        <IllustratedMessage illustrationType="sapIllus-PageNotFound"
-            title="{i18n>NotFound.text}" description="{i18n>NotFound.description}">
-            <additionalContent>
-                <Button text="{i18n>NotFound.link}" type="Emphasized" press=".onNavBack"/>
-            </additionalContent>
-        </IllustratedMessage>      
-    </VBox>
+    <IllustratedMessage illustrationType="sapIllus-PageNotFound"
+        title="{i18n>NotFound.text}" description="{i18n>NotFound.description}">
+        <additionalContent>
+            <Button text="{i18n>NotFound.link}" type="Emphasized" press=".onNavBack"/>
+        </additionalContent>
+    </IllustratedMessage>      
 </mvc:View>

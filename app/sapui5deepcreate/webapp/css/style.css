@@ -1,1 +1,4 @@
-/* Enter your custom styles here */
+/* hide dashed underline for input controls used for display only */
+.ucUiNoReadonlyDash .sapMInputBaseReadonly .sapMInputBaseContentWrapper {
+    background: none;
+}
