@@ -43,11 +43,15 @@
                     </OverflowToolbar>                    
                 </smartTable:customToolbar>
                 <Table itemPress=".onItemPress">
+                    <items>
+                        <ColumnListItem type="Active"/>
+                    </items>
+                    <!--
                     <columns>
                         <Column id="materialItems" hAlign="Begin">
                             <customData>
                                 <core:CustomData key="p13nData"
-                                    value='\{"columnKey": "ItemInfo", "columnIndex": 9, "XnavigationProperty": "to_Item", "additionalProperty": "to_Item/RequestedQuantity,to_Item/Material"}' />
+                                    value='\{"columnKey": "ItemInfo", "columnIndex": 9, "navigationProperty": "to_Item", "additionalProperty": "to_Item/RequestedQuantity,to_Item/Material"}' />
                             </customData>
                             <Text text="{i18n>Items}" />
                         </Column>
@@ -59,6 +63,7 @@
                             </cells>
                         </ColumnListItem>
                     </items>
+                    -->
                 </Table>                    
 			</smartTable:SmartTable>
         </f:content>

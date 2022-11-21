@@ -205,10 +205,12 @@ sap.ui.define([
             var oView = this.getView(),
                 oViewModel = oView.getModel("ui"),
                 oDataModel = this.getModel(),
+                oEditArea = this.byId("ObjectPageLayout"),
                 bEditable = sPath === "...";
 
             // remove former binding
             oView.unbindElement();
+            //oEditArea.unbindElement();
 
             // EDIT/DISPLAY MODE
             this.getAppComponent().setEditable(bEditable);
@@ -218,14 +220,36 @@ sap.ui.define([
 
             if (bEditable) {
                 // create transient context for root entity (sales order)
-                this.editFlow.createDocument("/SalesOrder", {
+                // and bind context to view
+                var oEditContext = this.editFlow.createDocument("/SalesOrder", {
                     CustomerPurchaseOrderDate: new Date(),
                     PurchaseOrderByCustomer: ""
                 });
 
-                // create transient context for subentity (sales order line item) 
-                // and display it in the items table (use placeholder)
-                this._addItem();
+                //oEditArea.setBindingContext(oEditContext);
+                oView.setBindingContext(oEditContext);
+
+                this._addInitialItem();
+
+                /*
+                var that = this,
+                    oSmartTableItems = this.byId("smartTableItems");
+
+                if (oSmartTableItems.isInitialised()) {
+                    this._addItem();
+                } else {
+                    var fnAddItem = function () {
+                        // create transient context for subentity (sales order line item) 
+                        // and display it in the items table (use placeholder)
+                        setTimeout(function () {
+                            that._addItem();
+                            oSmartTableItems.detachBeforeRebindTable(fnAddItem);
+                            oSmartTableItems.rebindTable(true);
+                        }, 100);
+                    };
+                    oSmartTableItems.attachBeforeRebindTable(undefined, fnAddItem);
+                }
+                */
 
                 oViewModel.setProperty("/busy", false);
             } else {
@@ -271,13 +295,34 @@ sap.ui.define([
             oViewModel.setProperty("/busy", false);
         },
 
+        _addInitialItem: function () {
+            var that = this,
+                oSmartTableItems = this.byId("smartTableItems");
+
+            if (oSmartTableItems.isInitialised()) {
+                this._addItem();
+            } else {
+                var fnAddItem = function () {
+                    // create transient context for subentity (sales order line item) 
+                    // and display it in the items table (use placeholder)
+                    setTimeout(function () {
+                        oSmartTableItems.detachBeforeRebindTable(fnAddItem); // needs to be done before rebind
+                        that._addItem();
+                        oSmartTableItems.rebindTable(true);
+                    }, 100);
+                };
+                oSmartTableItems.attachBeforeRebindTable(undefined, fnAddItem);
+            }
+        },
+
         _addItem: function (oDefaultData) {
-            /*
-            var oSmartTable = this.byId("smartTableItems");
-            oSmartTable.rebindTable(true);
-            */
-            var oTable = this.byId("itemTable"),
+            var oSmartTable = this.byId("smartTableItems"),
+                oTable = (oSmartTable) ? oSmartTable.getTable() : this.byId("itemTable"),
                 oBinding = oTable.getBinding("items");
+
+            if (!oBinding) {
+                return;
+            }
 
             var oData = {
                 RequestedQuantity: 1.0,
@@ -288,15 +333,18 @@ sap.ui.define([
                 oData = Object.assign(oDefaultData, oData);
             }
 
-            // create transient context for subentity (sales order line item) 
-            oBinding.create(oData, true); // insert at end                        
-
             // after adding put the focus on the newly create item
             oTable.attachEventOnce("updateFinished", function () {
                 var aItems = oTable.getItems(),
                     oItem = aItems[aItems.length - 1];
-                oItem.focus();
+
+                if (oItem) {
+                    oItem.focus();
+                }
             }, oTable);
+
+            // create transient context for subentity (sales order line item) 
+            oBinding.create(oData, true); // insert at end                        
         }
 
     });

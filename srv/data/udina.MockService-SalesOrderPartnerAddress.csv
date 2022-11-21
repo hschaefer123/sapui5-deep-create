@@ -1,0 +1,5 @@
+SalesOrder,PartnerFunction,AddressRepresentationCode,CorrespondenceLanguage,AddresseeFullName,OrganizationName1,StreetName,HouseNumber,PostalCode,CityName,Region,Country,EmailAddress,PhoneNumberCountry
+0000000001,AG,1,de,"Lissaboner Allee 6, D-44269 Dortmund",UNIORG Cloud Services,Lissaboner Allee,6,44269,Dortmund,NRW,DE,info@uniorg.de,+49 231 9497-0
+0000000001,WE,1,de,"Lissaboner Allee 8, D-44269 Dortmund",UNIORG Cloud Services,Lissaboner Allee,8,44269,Dortmund,NRW,DE,info@uniorg.de,+49 231 9497-0
+0000000002,AG,1,de,"Lissaboner Allee 6, D-44269 Dortmund",UNIORG Cloud Services,Lissaboner Allee,6,44269,Dortmund,NRW,DE,info@uniorg.de,+49 231 9497-0
+0000000002,WE,1,de,"Lissaboner Allee 8, D-44269 Dortmund",UNIORG Cloud Services,Lissaboner Allee,8,44269,Dortmund,NRW,DE,info@uniorg.de,+49 231 9497-0

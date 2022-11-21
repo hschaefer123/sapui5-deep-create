@@ -62,58 +62,78 @@ sap.ui.define([
 
         onContextCreated: function (oContext) { },
 
+        /* =========================================================== */
+        /* Upload handling                                             */
+        /* =========================================================== */
+
         onUploadCompleted: function (oEvent) {
-            return;
-
-            var oItem = oEvent.getParameter("item"),
-                oContext = oItem.getBindingContext("undefined"),
-                oModel = oContext.getModel(),
+            var oUploadSet = oEvent.getSource(),
+                oUploadSetBinding = oUploadSet.getBinding("items"),
+                oItem = oEvent.getParameter("item"),
                 oFileObject = oItem.getFileObject(),
-                oReader = new FileReader(),
-                oUploadSetBinding = this.base.byId("UploadSet").getBinding("items");
+                oReader = new FileReader();
 
-            console.log(oItem, oContext, oUploadSetBinding);
-            //oContext.getPath() = "/SalesOrder('id-1668682800581-39')"
-            
-            oReader.onload = function () {        
-                /* 1) set property Data on context
-                **    not working, because item binding context is SalesOrder?!?
-                **    oContext.getPath() = "/SalesOrder('id-1668682800581-39')"
-                */
-                oModel.setProperty(
-                    oContext.getPath(), 
-                    oReader.result.split(",")[1],
-                    oContext
-                );
-                console.log("onUploadCompleted", oContext.getObject());
+            //console.log("onUploadCompleted", oItem, oContext, oUploadSetBinding);
 
-                /* 2) manually create additional entry
-                **    works and submits relevant data with to_Attachment,
-                **    but after deletion creates duplicated entry
-                */
+            oReader.onload = function () {
+                // Create oData context
                 var oNewContext = oUploadSetBinding.create(({
                     // support renamed fileName instead origin
                     "FileName": oItem.getFileName(),
                     "MediaType": oFileObject.type,
                     "Data": oReader.result.split(",")[1]
                 }), true); // insert at end      
-                console.log("oNewContext", oNewContext);
-                /*
-                sDeepPath: "/SalesOrder('id-1668682132388-39')/to_Attachment('id-1668682138434-59')"
-                sPath: "/Attachment('id-1668682138434-59')"
-                */
-            };
 
+                // fake preview
+                //oItem.setProperty("url", "data:" + oFileObject.type + ";base64," + oReader.result.split(",")[1]);
+
+                // use url to store ref to odata context, 
+                // because custom data is empty at afterItemRemoved
+                oItem.setProperty("url", oNewContext.getPath());
+            };
             oReader.readAsDataURL(oFileObject);
         },
 
-        onUploadItemRemoved: function(oEvent) {            
-            var oItem = oEvent.getParameter("item"),
-                oFileName = oItem.getFileName(),
-                oItemsBinding = this.base.byId("UploadSet").getBinding("items");
+        onUploadAdd: function (oEvent) {
+            var oUploadSet = oEvent.getSource(),
+                aItems = oUploadSet.getItems(),
+                oItem = oEvent.getParameter("item"),
+                sFileName = oItem.getFileName();
 
-            //console.log("onUploadItemRemoved", oFileName, oItemsBinding);
-            //oContext.delete();
+            const oTargetItem = aItems.find(oItem => oItem.getFileName() === sFileName);
+            if (oTargetItem) {
+                alert("file existst");
+                // skip adding existing file
+                oEvent.preventDefault();
+            }
+        },
+
+        onUploadRenamed: function (oEvent) {
+            var oUploadSet = oEvent.getSource(),
+                oItemsBinding = oUploadSet.getBinding("items"),
+                aItemContexts = oItemsBinding.getContexts(),
+                oItem = oEvent.getParameter("item"),
+                sPath = oItem.getProperty("url");
+
+            const oTargetItem = aItemContexts.find(oItem => oItem.sPath === sPath);
+            if (oTargetItem) {
+                //console.log("onUploadRenamed", sPath, oRenameItem, oItem.getFileName());
+                oTargetItem.getModel().setProperty("FileName", oItem.getFileName(), oRenameItem);
+            }
+        },
+
+        onUploadRemoved: function (oEvent) {
+            var oUploadSet = oEvent.getSource(),
+                oItemsBinding = oUploadSet.getBinding("items"),
+                aItemContexts = oItemsBinding.getContexts(),
+                oItem = oEvent.getParameter("item"),
+                sPath = oItem.getProperty("url");
+
+            const oTargetItem = aItemContexts.find(oItem => oItem.sPath === sPath);
+            if (oTargetItem) {
+                //console.log("onUploadItemRemoved", sPath, oDeleteItem, oItem);
+                oTargetItem.delete();
+            }
         },
 
         /* =========================================================== */
@@ -164,7 +184,7 @@ sap.ui.define([
                 }.bind(this));
 
             // bind a form against the transient context for the newly created entity
-            oView.setBindingContext(this._oContext);
+            //oView.setBindingContext(this._oContext);
 
             return this._oContext;
         },
@@ -384,7 +404,7 @@ sap.ui.define([
                                 var sBase64 = oReader.result.split(",")[1];
                                 aAttachment.push({
                                     // support renamed fileName instead origin
-                                    "FileName": oFile.getFileName(), 
+                                    "FileName": oFile.getFileName(),
                                     "MediaType": oFileObject.type,
                                     "Data": sBase64
                                 });

@@ -59,23 +59,25 @@
                             initials="{SalesOrderType}"
                             displayShape="Square" displaySize="XL"/>                            
                         <l:VerticalLayout class="sapUiMediumMarginEnd">
-                            <Title class="sapUiTinyMarginBottom" level="H3">
+                            <Title class="sapUiTinyMarginBottom" text="{i18n>Partners}" level="H3">
+                                <!--
                                 <Link text="{i18n>Partners}" 
                                     data:title="{i18n>Partners}"
                                     data:target="ShipToParty" 
                                     press=".annotationHelper.onQuickView"/>
+                                -->
                             </Title>
-                            <ObjectAttribute id="SoldToParty" class="sapUiTinyMarginBottom"
-                                title="{i18n>SoldToParty}" text="UNIORG Cloud Services"
+                            <ObjectAttribute binding="{to_SoldToParty}"
+                                id="SoldToParty" class="sapUiTinyMarginBottom"
+                                title="{i18n>SoldToParty}" text="{OrganizationName1}"
                                 active="true"
                                 data:title="{i18n>SoldToParty}"
-                                data:target="SoldToParty" 
                                 press=".annotationHelper.onQuickView"/>
-                            <ObjectAttribute id="ShipToParty"
-                                title="{i18n>PurchaseOrderByShipToParty}" text="UNIORG Cloud Services" 
+                            <ObjectAttribute binding="{to_ShipToParty}"
+                                id="ShipToParty"
+                                title="{i18n>PurchaseOrderByShipToParty}" text="{OrganizationName1}"
                                 active="true"
                                 data:title="{i18n>PurchaseOrderByShipToParty}"
-                                data:target="PurchaseOrderByShipToParty" 
                                 press=".annotationHelper.onQuickView"/>
                         </l:VerticalLayout>
                         <l:VerticalLayout class="sapUiMediumMarginEnd">
@@ -125,7 +127,7 @@
                                     <smartForm:layout>
                                         <smartForm:ColumnLayout columnsM="2" columnsL="3" columnsXL="4"/>
                                     </smartForm:layout>
-                                    <smartForm:Group>
+                                    <smartForm:Group title="">
                                         <smartForm:GroupElement>
                                             <smartField:SmartField id="CustomerPurchaseOrderDate" 
                                                 value="{CustomerPurchaseOrderDate}"/>
@@ -134,6 +136,10 @@
                                             <smartField:SmartField id="PurchaseOrderByCustomer"
                                                 value="{PurchaseOrderByCustomer}"/>
                                         </smartForm:GroupElement>                                
+                                        <smartForm:GroupElement>
+                                            <smartField:SmartField id="PurchaseOrderByShipToParty" 
+                                                value="{PurchaseOrderByShipToParty}"/>
+                                        </smartForm:GroupElement>
                                     </smartForm:Group>
                                 </smartForm:SmartForm>
                             </uxap:ObjectPageSubSection>
@@ -143,6 +149,8 @@
                         titleUppercase="false" showTitle="false">
                         <uxap:subSections>
                             <uxap:ObjectPageSubSection>
+                                <!-- text="{/SalesOrderItem/RequestedQuantity/#@sap:label}" -->
+                                <!--
                                 <Table id="itemTable" width="auto" items="{to_Item}"
                                     mode="{= ${ui>/isEditable} ? 'Delete' : 'None' }" delete=".onDeleteItem"                            
                                     updateFinished=".onItemUpdateFinished">
@@ -157,8 +165,7 @@
                                         </Toolbar>
                                     </headerToolbar>
                                     <columns>
-                                        <Column width="12em" hAlign="End">
-                                            <!-- text="{/SalesOrderItem/RequestedQuantity/#@sap:label}" -->
+                                        <Column width="12em" hAlign="End">                                            
                                             <Label text="{i18n>RequestedQuantity}"/>
                                         </Column>
                                         <Column width="6em">
@@ -171,7 +178,6 @@
                                     <items>
                                         <ColumnListItem>
                                             <cells>
-                                                <!-- use valuePrecision to allow floats -->
                                                 <StepInput class="ucUiNoReadonlyDash" 
                                                     value="{RequestedQuantity}" 
                                                     min="1" editable="{ui>/isEditable}"/>
@@ -183,14 +189,16 @@
                                         </ColumnListItem>
                                     </items>
                                 </Table>
-                                <!-- Too many issues with SmartTable like editable only works onetime, eutoBinding not working -> rebindTable 
+                                -->
                                 <smartTable:SmartTable id="smartTableItems" showRowCount="true" 
                                     header="{i18n>Items}" tableType="ResponsiveTable"
                                     editable="{ui>/isEditable}"
                                     entitySet="SalesOrderItem" tableBindingPath="to_Item" enableAutoBinding="true" 
                                     enableAutoColumnWidth="true"                                            
                                     initiallyVisibleFields="RequestedQuantity,RequestedQuantityUnit,Material"
-                                    initialise=".onSmartTableInitialize">
+                                    initialise=".onSmartTableInitialize"
+                                    data:useSmartField="true" 
+                                    data:useSmartToggle="true">
                                     <smartTable:layoutData>
                                         <FlexItemData growFactor="1" baseSize="0%"/>
                                     </smartTable:layoutData>
@@ -201,12 +209,14 @@
                                             <ToolbarSeparator/>
                                         </OverflowToolbar>                    
                                     </smartTable:customToolbar>
-                                    <Table id="itemTable">
+                                    <Table id="itemTable"
+                                        mode="{= ${ui>/isEditable} ? 'Delete' : 'None' }" 
+                                        delete=".onDeleteItem">
                                         <columns>
                                             <Column width="12em">
                                                 <customData>
                                                     <core:CustomData key="p13nData"
-                                                        value='\{"columnKey": "RequestedQuantity", "columnIndex": 0}' />
+                                                        value='\{"columnKey": "RequestedQuantity", "leadingProperty":"RequestedQuantity", "additionalProperty":"RequestedQuantityUnit", "columnIndex": 0}' />
                                                 </customData>
                                                 <Text text="{/SalesOrderItem/RequestedQuantity/#@sap:label}"/>
                                             </Column>
@@ -214,22 +224,25 @@
                                         <items>
                                             <ColumnListItem>
                                                 <cells>
-                                                    <StepInput value="{RequestedQuantity}" editable="{ui>/isEditable}"/>
+                                                    <StepInput class="ucUiNoReadonlyDash" 
+                                                        value="{RequestedQuantity}" 
+                                                        editable="{ui>/isEditable}"/>
                                                 </cells>
                                             </ColumnListItem>
                                         </items>
                                     </Table>                    
-                                </smartTable:SmartTable>
-                                -->
+                                </smartTable:SmartTable>   
                             </uxap:ObjectPageSubSection>
                         </uxap:subSections>
                     </uxap:ObjectPageSection>
+                    
                     <uxap:ObjectPageSection id="SalesOrderAttachments" title="{i18n>Attachments}" 
                         titleUppercase="false" showTitle="false">
                         <uxap:subSections>
                             <uxap:ObjectPageSubSection>                    
                                 <upload:UploadSet
                                     id="UploadSet"
+                                    items="{path: 'to_Attachment', templateShareable: false}"
                                     visible="{ui>/isEditable}" 
                                     instantUpload="true"
                                     uploadButtonInvisible="{= !${ui>/isEditable}}"
@@ -238,11 +251,12 @@
                                     fileTypes="txt,doc,png,pdf"
                                     maxFileNameLength="30"
                                     maxFileSize="5000"
-                                    mediaTypes="text/plain,application/msword,application/pdf,image/svg+xml,image/jpeg,image/png"
-                                    items="{path: 'to_Attachment', templateShareable: false}"
-                                    mode="None"
+                                    mediaTypes="text/plain,application/msword,application/pdf,image/svg+xml,image/jpeg,image/png"                                    
+                                    beforeItemAdded=".editFlow.onUploadAdd"
                                     uploadCompleted=".editFlow.onUploadCompleted"
-                                    afterItemRemoved=".editFlow.onUploadItemRemoved">
+                                    fileRenamed=".editFlow.onUploadRenamed"
+                                    xbeforeItemRemoved=".editFlow.onUploadItemRemoved"
+                                    afterItemRemoved=".editFlow.onUploadRemoved">
                                     <upload:toolbar>
                                         <OverflowToolbar>
                                             <Title text="{i18n>Attachments} ({view>/attachmentCount})" 
@@ -290,7 +304,7 @@
                         <ToolbarSpacer/>
                         <Button text="{i18n>Create}" type="Emphasized" busyIndicatorDelay="0" 
                             press=".editFlow.onSave"/>
-                        <Button text="{i18n>SavePreProcessed}" press=".editFlow.onSavePreProcessed"/>
+                        <!--<Button text="{i18n>SavePreProcessed}" press=".editFlow.onSavePreProcessed"/>-->
                         <Button text="{i18n>Cancel}" press=".editFlow.onCancel"/>
                     </OverflowToolbar>
                 </uxap:footer>

@@ -52,8 +52,10 @@ sap.ui.define([
             oEvent.preventDefault();
         },
 
-        onUploadSetItemOpenPressed: function (oEvent) {
+        onUploadSetItemOpenPressed: function (oEvent) {            
             var oItem = oEvent.getParameter("item");
+
+            console.log("onUploadSetItemOpenPressed");
 
             this.openFile(
                 oItem.getFileName(),
@@ -124,7 +126,8 @@ sap.ui.define([
                 var oPDFViewer = this.getPDFViewer();
                 iPos = sUrl.lastIndexOf("/");
 
-                oPDFViewer.setSource(encodeURI(sUrl));
+                //oPDFViewer.setSource(encodeURI(sUrl));
+                oPDFViewer.setSource(sUrl);
                 oPDFViewer.setTitle((sTitle) ? sTitle : sUrl.substr(iPos + 1));
                 oPDFViewer.open();
             } else {

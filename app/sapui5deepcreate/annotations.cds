@@ -9,6 +9,8 @@ annotate service.SalesOrder with {
     SalesOrderType             @title : '{i18n>SalesOrderType}';
     PurchaseOrderByCustomer    @title : '{i18n>PurchaseOrderByCustomer}';
     CustomerPurchaseOrderDate  @title : '{i18n>CustomerPurchaseOrderDate}'  @Common.FieldControl    : #Mandatory;
+    SoldToParty                @title : '{i18n>SoldToParty}';
+    PurchaseOrderByShipToParty @title : '{i18n>PurchaseOrderByShipToParty}';
 };
 
 ////////////////////////////////////////////////////////////////////////////
@@ -43,7 +45,13 @@ annotate service.SalesOrder with @(
         LineItem            : {$value : [
             {Value : SalesOrder},
             {Value : SalesOrderType},
-            {Value : PurchaseOrderByCustomer}
+            {Value : PurchaseOrderByCustomer},
+            {
+                $Type             : 'UI.DataFieldForAnnotation',
+                Label             : '{i18n>PurchaseOrderByShipToParty}',
+                Target            : 'to_SoldToParty/OrganizationName1/@Communication.Company',
+                ![@UI.Importance] : #Low
+            }
         ]}
     },
     Capabilities       : {
@@ -88,6 +96,49 @@ annotate service.SalesOrder with {
             ]
         }
     };
+    PurchaseOrderByShipToParty @Common : {
+        Text            : to_ShipToParty.OrganizationName1,
+        TextArrangement : #TextFirst,
+        ValueList       : {
+            CollectionPath : 'ShipToPartnerVH',
+            Parameters     : [
+                {
+                    $Type             : 'Common.ValueListParameterInOut',
+                    LocalDataProperty : PurchaseOrderByShipToParty,
+                    ValueListProperty : 'Customer'
+                },
+                {
+                    $Type             : 'Common.ValueListParameterConstant',
+                    ValueListProperty : 'PartnerFunction',
+                    Constant          : 'WE'
+                },
+                {
+                    $Type             : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty : 'OrganizationName1'
+                },
+                {
+                    $Type             : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty : 'StreetName'
+                },
+                {
+                    $Type             : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty : 'HouseNumber'
+                },
+                {
+                    $Type             : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty : 'PostalCode'
+                },
+                {
+                    $Type             : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty : 'CityName'
+                },
+                {
+                    $Type             : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty : 'Country'
+                }
+            ]
+        }
+    };
 }
 
 annotate service.SalesOrderType with {
@@ -96,3 +147,43 @@ annotate service.SalesOrderType with {
         TextArrangement : #TextLast
     }
 }
+
+////////////////////////////////////////////////////////////////////////////
+//
+//	Contact General
+//
+annotate service.SalesOrderPartnerAddress with @(
+                                                 //Common.SemanticKey : [email],
+                                                 /*
+                                                 UI                 : {
+                                                     Identification               : [{Value : email}],
+                                                     PresentationVariant #Contact : {SortOrder : [{
+                                                         Property   : company,
+                                                         Descending : true
+                                                     }]}
+                                                 },
+                                                 */
+                                               Communication : {Company : {
+    fn    : AddresseeFullName,
+    title : OrganizationName1,
+    org   : OrganizationName1,
+//role  : '{i18n>Role}',
+// issue with photo! data taken from wrong entity!!!
+//photo : imageUrl,
+//photo : 'sap-icon://user',
+/*
+n     : {
+    given      : firstName,
+    additional : '',
+    surname    : lastName
+},
+email : [{
+    type    : #work,
+    address : email
+}],
+tel   : [{
+    type : #work,
+    uri  : phone
+}]
+*/
+}});

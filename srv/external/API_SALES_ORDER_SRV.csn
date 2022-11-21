@@ -751,7 +751,20 @@
           "cardinality": {
             "max": "*"
           },
-          "keys": []
+          "on": [
+            {
+              "ref": [
+                "to_Partner",
+                "SalesOrder"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "SalesOrder"
+              ]
+            }
+          ]
         },
         "to_PaymentPlanItemDetails": {
           "@cds.ambiguous": "missing on condition?",
@@ -1227,7 +1240,33 @@
           "cardinality": {
             "max": "*"
           },
-          "keys": []
+          "on": [
+            {
+              "ref": [
+                "to_Address",
+                "SalesOrder"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "SalesOrder"
+              ]
+            },
+            "and",
+            {
+              "ref": [
+                "to_Address",
+                "PartnerFunction"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "PartnerFunction"
+              ]
+            }
+          ]
         },
         "to_SalesOrder": {
           "@cds.ambiguous": "missing on condition?",

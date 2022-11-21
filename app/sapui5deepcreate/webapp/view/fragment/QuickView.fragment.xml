@@ -14,7 +14,7 @@
 				templateShareable: true
 			}">
             <avatar>
-                <Avatar src="sap-icon://building" displayShape="Square" />
+                <Avatar src="{quickView>avatarSrc}" displayShape="Square" />
             </avatar>
             <QuickViewGroup 
                 heading="{quickView>heading}" 
@@ -23,7 +23,7 @@
                     label="{quickView>label}" 
                     value="{quickView>value}" 
                     url="{quickView>url}" 
-                    type="{quickView>elementType}" 
+                    type="{quickView>type}" 
                     pageLinkId="{quickView>pageLinkId}" 
                     emailSubject="{quickView>emailSubject}" 
                     target="{quickView>target}"/>

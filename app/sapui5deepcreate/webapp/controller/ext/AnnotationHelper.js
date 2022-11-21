@@ -34,14 +34,12 @@ sap.ui.define([
                 sTitle = oControl.data("title"),
                 sTarget = oControl.data("target");
 
-            this._setCompanyModel(sTitle, sTarget);
+            this._setCommunicationModel(sTitle, oControl.getBindingContext());
             this.openQuickView(oControl);
         },
 
         openQuickView: function (oControl) {
-            var oView = this.base.getView(),
-                sTitle = oControl.data("title"),
-                sTarget = oControl.data("target");
+            var oView = this.base.getView();
 
             if (!this._pQuickView) {
                 this._pQuickView = Fragment.load({
@@ -59,8 +57,65 @@ sap.ui.define([
             });
         },
 
-        _setCompanyModel: function (sTitle, sTarget) {            
-            var oPage = {},
+        _setCommunicationModel: function (sTitle, oContext) {
+            var sPath = oContext.getPath(),
+                mPages;
+
+            //console.log("_setCompanyModel", sPath, oContext.getObject());
+
+            if (sPath.startsWith("/SalesOrderPartnerAddress")) {
+                mPages = this._getCommunicationByPartner(sTitle, oContext);
+            }
+
+            var oQuickViewModel = this.base.getModel("quickView");
+            if (!oQuickViewModel) {
+                oQuickViewModel = new JSONModel();
+                this.base.getView().setModel(oQuickViewModel, "quickView");
+            }
+            oQuickViewModel.setProperty("/pages", Array.isArray(mPages) ? mPages : [mPages]);
+        },
+
+        _getCommunicationByPartner: function (sTitle, oContext) {
+            var oData = oContext.getObject();
+
+            return {
+                pageId: "Partner",
+                header: sTitle,
+                title: oData.OrganizationName1,
+                description: oData.AddresseeFullName,
+                avatarSrc: "sap-icon://building",
+                groups: [{
+                    heading: this.base.getText("Contact"),
+                    elements: [{
+                        label: this.base.getText("Email"),
+                        value: oData.EmailAddress,
+                        type: "email",
+                        emailSubject: "Please contact me..."
+                    }, {
+                        label: this.base.getText("Phone"),
+                        value: oData.PhoneNumberCountry,
+                        type: "phone"
+                    }, {
+                        label: this.base.getText("Mobile"),
+                        value: oData.MobilePhoneCountry,
+                        type: "mobile"
+                    }
+                        /*
+                        }, {
+                            label: this.base.getText("Website"),
+                            value: oData.???,
+                            type: "link",
+                            url: "https://www.uniorg.de"
+                        }
+                        */
+                    ]
+                }]
+            };
+        },
+
+        _getCommunicationByXyz: function (sTitle, oContext) {
+            var oData = oContext.getObject(),
+                oPage = {},
                 aPages = [],
                 aGroups = [],
                 aElements = [];
@@ -98,14 +153,7 @@ sap.ui.define([
                 elements: aElements
             });
 
-            aPages.push(oPage);
-
-            var oQuickViewModel = this.base.getModel("quickView");
-            if (!oQuickViewModel) {
-                oQuickViewModel = new JSONModel();
-                this.base.getView().setModel(oQuickViewModel, "quickView");
-            }
-            oQuickViewModel.setProperty("/pages", aPages);
+            return oPage;
         }
 
     });

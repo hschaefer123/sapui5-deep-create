@@ -86,6 +86,17 @@ sap.ui.define([
                 sI18nModelName = "i18n";
             }
             return (this.getAppComponent().getModel(sI18nModelName)).getResourceBundle();
+        },
+
+        /**
+         * Convenience method for getting the resource bundle text.
+         * @public
+         * @param {string} sKey  the property to read
+         * @param {string[]} aArgs? List of parameters which should replace the place holders "{n}" (n is the index) in the found locale-specific string value.
+         * @returns {String} the corresponding text for the key
+         */
+        getText: function (sKey, aArgs) {
+            return this.getResourceBundle().getText(sKey, aArgs);
         }
 
     });

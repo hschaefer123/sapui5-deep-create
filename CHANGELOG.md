@@ -4,6 +4,18 @@
 - The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - This project adheres to [Semantic Versioning](http://semver.org/).
 
+## Version 0.1.4 - 2022-11-21
+### Added
+- PartnerAddress master data to be shown by QuickView popup
+### Changed
+- using SmartTable for to_Item aggregation
+- UploadSet now lively creates to_Attachment context that can be submited
+- Removed savePreCreate, because no more needed
+- refactored CAP mock extensions 
+
+### Fixed
+- Fixed SmartTable editable sync with custom data directive
+
 ## Version 0.1.3 - 2022-11-18
 
 ### Added
