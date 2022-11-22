@@ -93,6 +93,8 @@ sap.ui.define([
                 oItem.setProperty("url", oNewContext.getPath());
             };
             oReader.readAsDataURL(oFileObject);
+
+            this._refreshAttachmentCount(oUploadSet);
         },
 
         onUploadAdd: function (oEvent) {
@@ -106,7 +108,7 @@ sap.ui.define([
                 alert("file existst");
                 // skip adding existing file
                 oEvent.preventDefault();
-            }
+            }            
         },
 
         onUploadRenamed: function (oEvent) {
@@ -135,6 +137,19 @@ sap.ui.define([
                 //console.log("onUploadItemRemoved", sPath, oDeleteItem, oItem);
                 oTargetItem.delete();
             }
+            this._refreshAttachmentCount(oUploadSet);
+        },
+
+        onUploadDataReceived: function(oEvent) {
+            var iTotal = oEvent.getParameter("data").results.length;
+
+            this._refreshAttachmentCount(undefined, iTotal);
+        },
+
+        _refreshAttachmentCount: function(oUploadSet, iTotal) {
+            var iCount = (oUploadSet) ? oUploadSet.getItems().length : iTotal;
+            
+            this.base.getView().getModel("view").setProperty("/attachmentCount", iCount);
         },
 
         /* =========================================================== */
@@ -183,6 +198,8 @@ sap.ui.define([
                     this._oContext = null;
 
                 }.bind(this));
+
+            this._refreshAttachmentCount(undefined, 0);
 
             // bind a form against the transient context for the newly created entity
             //oView.setBindingContext(this._oContext);

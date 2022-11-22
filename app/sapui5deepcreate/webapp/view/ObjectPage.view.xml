@@ -67,13 +67,13 @@
                                     press=".annotationHelper.onQuickView"/>
                                 -->
                             </Title>
-                            <ObjectAttribute binding="{to_SoldToParty}"
-                                id="SoldToParty" class="sapUiTinyMarginBottom"
+                            <ObjectAttribute binding="{to_SoldToParty}" ariaHasPopup="Dialog"
+                                id="SoldToParty" class="sapUiTinyMarginBottom"                                
                                 title="{i18n>SoldToParty}" text="{OrganizationName1}"
                                 active="true"
                                 data:title="{i18n>SoldToParty}"
                                 press=".annotationHelper.onQuickView"/>
-                            <ObjectAttribute binding="{to_ShipToParty}"
+                            <ObjectAttribute binding="{to_ShipToParty}" ariaHasPopup="Dialog"
                                 id="ShipToParty"
                                 title="{i18n>PurchaseOrderByShipToParty}" text="{OrganizationName1}"
                                 active="true"
@@ -234,16 +234,20 @@
                                 </smartTable:SmartTable>   
                             </uxap:ObjectPageSubSection>
                         </uxap:subSections>
-                    </uxap:ObjectPageSection>
-                    
+                    </uxap:ObjectPageSection>                    
                     <uxap:ObjectPageSection id="SalesOrderAttachments" title="{i18n>Attachments}" 
                         titleUppercase="false" showTitle="false">
                         <uxap:subSections>
                             <uxap:ObjectPageSubSection>                    
                                 <upload:UploadSet
                                     id="UploadSet"
-                                    items="{path: 'to_Attachment', templateShareable: false}"
-                                    visible="{ui>/isEditable}" 
+                                    items="{
+                                        path: 'to_Attachment', 
+                                        events: {
+                                            dataReceived: '.editFlow.onUploadDataReceived'
+                                        },
+                                        templateShareable: false
+                                    }"
                                     instantUpload="true"
                                     uploadButtonInvisible="{= !${ui>/isEditable}}"
                                     uploadEnabled="{ui>/isEditable}"                            
@@ -270,10 +274,13 @@
                                             mediaType="{MediaType}"
                                             url="{Url}"
                                             thumbnailUrl="{ThumbnailUrl}"
+                                            visibleEdit="{ui>/isEditable}"
+                                            visibleRemove="{ui>/isEditable}"
                                             openPressed=".fileViewer.onUploadSetItemOpenPressed">
                                         </upload:UploadSetItem>
                                     </upload:items>
                                 </upload:UploadSet>
+                                <!--
                                 <List id="SalesOrderAttachmentList" 
                                     headerText="{i18n>Attachments} ({view>/attachmentCount})" 
                                     visible="{=!${ui>/isEditable}}" 
@@ -282,14 +289,17 @@
                                     <CustomListItem>
                                         <HBox class="sapUiSmallMargin" renderType="Bare" alignItems="Center">
                                             <Avatar src="{ThumbnailUrl}" displayShape="Square"
+                                                ariaHasPopup="Dialog"
                                                 badgeIcon="sap-icon://zoom-in"
                                                 fallbackIcon="{ path: 'FileName', formatter: '.formatter.fileNameIcon' }"
                                                 press=".fileViewer.onAvatarPress"/>
                                             <Link class="sapUiSmallMarginBegin" text="{FileName}"
+                                                ariaHasPopup="Dialog"
                                                 emphasized="true" press=".onFileOpenBySide"/>
                                         </HBox>		                            
                                     </CustomListItem>
                                 </List>                        
+                                -->
                             </uxap:ObjectPageSubSection>
                         </uxap:subSections>                
                     </uxap:ObjectPageSection>

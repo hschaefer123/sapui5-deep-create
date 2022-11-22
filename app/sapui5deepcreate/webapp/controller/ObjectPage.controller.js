@@ -5,8 +5,10 @@ sap.ui.define([
     "udina/sample/sapui5deepcreate/controller/ext/FileViewer",
     "udina/sample/sapui5deepcreate/controller/ext/AnnotationHelper",
     "sap/ui/model/json/JSONModel",
+    "sap/ui/core/aria/HasPopup",
     "sap/ndc/BarcodeScanner"
-], function (PageController, EditFlow, MessageHandler, FileViewer, AnnotationHelper, JSONModel, BarcodeScanner) {
+], function (PageController, EditFlow, MessageHandler, FileViewer, AnnotationHelper, JSONModel, 
+    HasPopup, BarcodeScanner) {
     "use strict";
 
     return PageController.extend("udina.sample.sapui5deepcreate.controller.ObjectPage", {
@@ -59,12 +61,6 @@ sap.ui.define([
 
         onAfterRendering: function () {
             this._sCurrentBreakpoint = this._oDynamicSideView.getCurrentBreakpoint();
-
-            //console.log("xxx", this.byId("SoldToParty").$(), this.byId("SoldToParty").getDomRef())
-            //this.byId("SoldToParty").getDomRef().setAttribute("aria-haspopup", true);
-
-            this.byId("SoldToParty").$().attr("aria-haspopup", true);
-            this.byId("ShipToParty").$().attr("aria-haspopup", true);
         },
 
         onFileOpenBySide: function (oEvent) {
@@ -311,7 +307,13 @@ sap.ui.define([
                     setTimeout(function () {
                         oSmartTableItems.detachBeforeRebindTable(fnAddItem); // needs to be done before rebind
                         that._addItem();
-                        oSmartTableItems.rebindTable(true);
+                        oSmartTableItems.rebindTable(true);                        
+                        /*
+                        var oBinding = oSmartTableItems.getTable().getBinding("items");
+                        if (oBinding) {
+                            oBinding.refresh(true);
+                        }
+                        */
                     }, 100);
                 };
                 oSmartTableItems.attachBeforeRebindTable(undefined, fnAddItem);

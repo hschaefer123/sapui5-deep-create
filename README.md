@@ -57,32 +57,53 @@ Therefore the NotFound and ObjectNotFound view implements the [Illustrated Messa
 ### Using Deep Create with expanded columns in List Report
 With initial release 1.108.0, there is currently an issue, that DeepCreate can not be used behind expanded list report columns. For this reason, inside **ListReport.view.xml** the used property **XnavigationProperty** that created the $expand is commented out for the moment. If this is fixed, i will readd this feature.
 
-### Need for manual fix after regenerating CSN from EDMX
-The generator does not create the relevant to_Item association.
+## SAPUI5 Freestyle development for Brownfield (unmanaged) scenarios
+Today, using the latest SAP S/4HANA system with SAP Fiori Elements v4, you will get out-of-the-box draft support for you entities and dependencies in Greenfield (managed) scenarios. 
 
-This is manually fixed inside **API_SALES_ORDER_SRV.csn** after creation using the following snippet:
+>Brownfield implementation means scenarios where existing legacy code such as a BAPI is being called by your service implementation in order to store the changed data in the database. Such scenarios are also called unmanaged. Another name for such scenarios are managed scenarios with a self implemented save.
 
-```json
-"to_Item": {
-    "@cds.ambiguous": "missing on condition?",
-    "type": "cds.Association",
-    "target": "API_SALES_ORDER_SRV.A_SalesOrderItem",
-    "cardinality": {
-    "max": "*"
-    },          
-    "on": [
-    {
-        "ref": [
-        "to_Item",
-        "SalesOrder"
-        ]
-    },
-    "=",
-    {
-        "ref": [
-        "SalesOrder"
-        ]
-    }
-    ]
-},
-```
+But how can you handle SAPUI5 requirements, if you are still running on the SAP Business Suite?
+
+The ABAP platform development team evolutionary enhanced the way of development, especially for SAP Fiori Elements.
+
+![Evolution of the ABAP Programming Model](./doc/evolution_of_the_abap_programming_model.png)
+
+If you are running on WAS >=7.5, you also have the option to use the ABAP Programming Model for SAP Fiori supporting draft enabled associations, but if you are running below, this demo is intended for such a scenario.
+
+### SEGW oData v2 service development
+
+Technically, the SEGW does not directly support the Greenfield (managed) approach, instead you have to implement services manually using the SEGW transaction. There is no managed draft service layer available, that will help you to create draft ready services. Instead, you mostly will directly work with BAPIs, because the Virtual Data Models (VDM) are only available on S/4HANA abstracting SAP Business Object relationships with CDS views. With SAP NW 7.5, CDS views will be available to be used as references sources, but you mostly have to recreate a kind of VDM by your own. Another aspect is, that generally used APIs seen in the [SAP API Explorer](https://api.sap.com/content-type/API/apis/packages) are not available for SAP Business Suite and needs to be reimplemented as your own API mostly calling existing BAPIs. 
+
+### BAPI calls with deep structure imports
+Some BAPIs, like the Sales
+
+
+### Attachments
+This demo leverages the functionality of uploading base64 serialized attachments together with a deep create. Inside ABAP SEGW service handler, these attachments needs to be deserialized to be used with the corresponding BAPIs.
+
+Best practise for working with attachment is using the [Attachment Service](https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/4c3d1c6b3d744f84aab4c273f979f430/b821e557b83a1070e10000000a44147b.html?locale=en-US) which is available for SAP S/4HANA and SAP Business Suite. The service offers Draft functionality and can be integrated into a SAPUI5 Freestyle application by adding the reuse component dependency `sap.se.mi.plm.lib.attachmentservice.attachment`.
+
+If you cannot fullfill the prerequisites, this solution can be a workaround.
+
+#### Attachment Service
+Attachments are an integral part of business applications and processes. Every application has its own way of uploading attachments in each process step. In SAP S/4HANA, the [Attachment Service](https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/4c3d1c6b3d744f84aab4c273f979f430/b821e557b83a1070e10000000a44147b.html?locale=en-US) is offered as a central unified solution for uploading attachments across applications. The applications can integrate operations such as upload, download, delete, and rename. There could be applications that do not have a UI to integrate the same, and in such cases Attachment Service offers back end APIs.
+
+Attachment Service is a reusable component that can be consumed by any SAP Fiori application to attach documents in SAP S/4HANA. SAP applications and customer built applications can use this feature to enable attachment capabilities.
+
+In SAP Business Suite, the attachments are stored via Document Management (DMS) or Generic Object Services (GOS).
+
+Depending on the consumption style, the association to a Document Info Record (DIR) or a GOS object is created when an attachment is uploaded from the UI control. Attachments are linked to a leading business object as defined by the application for their usage. The following graphic shows some of the SAP objects that you can link to an attachment in the standard system.
+
+![Attachment Business Object Association](./doc/attachment-service-objects.png)
+
+The business object association is maintained as an object link for a DIR in DMS.
+
+Attachment Service supports the concept of draft for scenarios such as adding, renaming, and deleting attachments. The changes are permanently persisted only when an explicit save is done by the user.
+
+The attachments can be stored in any of the following storage repositories:
+ArchiveLink based repository (Example: SAP Content Server)
+
+Content Management Interoperability Services (CMIS) based repository
+
+The Attachment Service consumption is depicted as follows:
+![Attachment Service Overview](./doc/attachment-service.png)
