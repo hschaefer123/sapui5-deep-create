@@ -60,6 +60,9 @@ sap.ui.define([
         onAfterRendering: function () {
             this._sCurrentBreakpoint = this._oDynamicSideView.getCurrentBreakpoint();
 
+            //console.log("xxx", this.byId("SoldToParty").$(), this.byId("SoldToParty").getDomRef())
+            //this.byId("SoldToParty").getDomRef().setAttribute("aria-haspopup", true);
+
             this.byId("SoldToParty").$().attr("aria-haspopup", true);
             this.byId("ShipToParty").$().attr("aria-haspopup", true);
         },

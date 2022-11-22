@@ -255,7 +255,6 @@
                                     beforeItemAdded=".editFlow.onUploadAdd"
                                     uploadCompleted=".editFlow.onUploadCompleted"
                                     fileRenamed=".editFlow.onUploadRenamed"
-                                    xbeforeItemRemoved=".editFlow.onUploadItemRemoved"
                                     afterItemRemoved=".editFlow.onUploadRemoved">
                                     <upload:toolbar>
                                         <OverflowToolbar>

@@ -2,8 +2,9 @@ sap.ui.define([
     "sap/ui/core/mvc/ControllerExtension",
     "sap/ui/core/mvc/OverrideExecution",
     "sap/ui/core/ValueState",
+    "sap/ui/core/Element",
     "sap/base/Log"
-], function (ControllerExtension, OverrideExecution, ValueState, Log) {
+], function (ControllerExtension, OverrideExecution, ValueState, Element, Log) {
     "use strict";
 
     /**
@@ -501,22 +502,21 @@ sap.ui.define([
 
             // retrieve all elements of this view and check ValueState if available
             domElements.forEach(function (domEl) {
-                if (!$(domEl).control) {
+                var oControl = Element.closestTo(domEl);
+
+                if (!oControl) {
                     return;
                 }
-                var oControl = $(domEl).control(0);
 
-                if (oControl) {
-                    // add mandatory smartfields
-                    if (oControl.isA("sap.ui.comp.smartfield.SmartField")
-                        && oControl.getEditable()
-                        && oControl.getMandatory()) {
-                        aMandatoryFields.push(oControl);
-                    } else if (oControl.data("mandatory")
-                        && oControl.data("mandatory") === "true") {
-                        // add controls with CustomData cd:mandatory="true"
-                        aMandatoryFields.push(oControl);
-                    }
+                // add mandatory smartfields
+                if (oControl.isA("sap.ui.comp.smartfield.SmartField")
+                    && oControl.getEditable()
+                    && oControl.getMandatory()) {
+                    aMandatoryFields.push(oControl);
+                } else if (oControl.data("mandatory")
+                    && oControl.data("mandatory") === "true") {
+                    // add controls with CustomData data:mandatory="true"
+                    aMandatoryFields.push(oControl);
                 }
             });
 
@@ -533,13 +533,12 @@ sap.ui.define([
                 domElements = document.querySelectorAll("#" + this.base.getView().getId() + " *");
 
             domElements.forEach(function (domEl) {
-                if ($(domEl).control) {
-                    var oControl = $(domEl).control(0);
-                    if (oControl
-                        && oControl.getValueState
-                        && oControl.getValueState() === ValueState.Error) {
-                        bError = true;
-                    }
+                var oControl = Element.closestTo(domEl);
+
+                if (oControl
+                    && oControl.getValueState
+                    && oControl.getValueState() === ValueState.Error) {
+                    bError = true;
                 }
             });
 
