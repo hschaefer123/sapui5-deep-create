@@ -11,8 +11,8 @@
         "express": "^4"
     },
     "devDependencies": {
-        "@sap/ux-specification": "^1.102.12",
-        "sqlite3": "^5.1.2"
+        "@sap/ux-specification": "^1.102.16",
+        "sqlite3": "^5.1.4"
     },
     "scripts": {        
         "watch": "cds watch --open index.html?sap-ui-xx-viewCache=false",

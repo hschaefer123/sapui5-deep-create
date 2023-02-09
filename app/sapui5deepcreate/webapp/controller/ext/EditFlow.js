@@ -3,8 +3,9 @@ sap.ui.define([
     "sap/ui/core/mvc/OverrideExecution",
     "sap/ui/core/ValueState",
     "sap/ui/core/Element",
+    "sap/m/MessageBox",
     "sap/base/Log"
-], function (ControllerExtension, OverrideExecution, ValueState, Element, Log) {
+], function (ControllerExtension, OverrideExecution, ValueState, Element, MessageBox, Log) {
     "use strict";
 
     /**
@@ -105,7 +106,10 @@ sap.ui.define([
 
             const oTargetItem = aItems.find(oItem => oItem.getFileName() === sFileName);
             if (oTargetItem) {
-                alert("file existst");
+                // avoid redundant files, because filename is used as ref between files and attachments
+                MessageBox.error("This file was already added!", {
+                    title: "File exists",
+                });
                 // skip adding existing file
                 oEvent.preventDefault();
             }            

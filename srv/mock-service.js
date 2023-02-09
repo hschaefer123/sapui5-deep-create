@@ -49,7 +49,8 @@ module.exports = async function () {
                 i++;
             }
         }
-        //console.log(salesOrder);
+        
+        console.log(salesOrder);
 
         // manually create sales order items
         const soi = await cds.create(SalesOrderItem, salesOrderItems);

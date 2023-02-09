@@ -249,6 +249,7 @@
                                         templateShareable: false
                                     }"
                                     instantUpload="true"
+                                    mode="SingleSelectMaster"
                                     uploadButtonInvisible="{= !${ui>/isEditable}}"
                                     uploadEnabled="{ui>/isEditable}"                            
                                     terminationEnabled="true"
@@ -259,7 +260,8 @@
                                     beforeItemAdded=".editFlow.onUploadAdd"
                                     uploadCompleted=".editFlow.onUploadCompleted"
                                     fileRenamed=".editFlow.onUploadRenamed"
-                                    afterItemRemoved=".editFlow.onUploadRemoved">
+                                    afterItemRemoved=".editFlow.onUploadRemoved"
+                                    selectionChanged=".onFileOpenBySide">
                                     <upload:toolbar>
                                         <OverflowToolbar>
                                             <Title text="{i18n>Attachments} ({view>/attachmentCount})" 

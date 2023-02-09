@@ -41,7 +41,11 @@ sap.ui.define([
 
         onAvatarPress: function (oEvent) {
             var oSource = oEvent.getSource(),
-                oContext = oSource.getBindingContext();
+                oList = oSource.getList(),
+                oItem = (oEvent.getParameter("items")) 
+                    ? oEvent.getParameter("items")[0]
+                    : oList.getSelectedItem(),
+                oContext = oItem.getBindingContext(); 
 
             this.openFile(
                 oContext.getProperty("FileName"),
@@ -54,8 +58,6 @@ sap.ui.define([
 
         onUploadSetItemOpenPressed: function (oEvent) {            
             var oItem = oEvent.getParameter("item");
-
-            console.log("onUploadSetItemOpenPressed");
 
             this.openFile(
                 oItem.getFileName(),

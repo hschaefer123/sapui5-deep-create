@@ -65,16 +65,22 @@ sap.ui.define([
 
         onFileOpenBySide: function (oEvent) {
             var oSource = oEvent.getSource(),
-                oContext = oSource.getBindingContext();
+                oList = oSource.getList(),
+                oItem = (oEvent.getParameter("items")) 
+                    ? oEvent.getParameter("items")[0]
+                    : oList.getSelectedItem(),
+                oContext = oItem.getBindingContext();
 
             if (oContext.getProperty("MediaType") === "application/pdf") {
                 this._oDynamicSideView.setShowSideContent(true);
                 this._oViewModel.setProperty("/pdfSource", oContext.getProperty("Url"));
                 this._oViewModel.setProperty("/pdfTitle", oContext.getProperty("FileName"));
-
             } else {
                 this.fileViewer.onAvatarPress.apply(this, arguments);
             }
+
+            // deselect litem items
+            oList.removeSelections();
         },
 
         onBarcodeScan: function () {
